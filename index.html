@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Índice de Sitios Web</title>
+    <!-- Incluye Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuración para usar la fuente Inter -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f8ff; /* Fondo muy claro, similar a la referencia */
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 sm:p-8 flex flex-col items-center">
+
+    <!-- Contenedor Principal Centrado -->
+    <div id="app-container" class="w-full max-w-4xl">
+
+        <!-- Encabezado Inspirado en la Referencia -->
+        <header class="text-center mb-8 p-6 bg-white rounded-xl shadow-lg border-b-4 border-blue-600">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-800 mb-2">
+                Math APPs
+            </h1>
+            <p class="text-gray-600 text-lg">
+                Explore quick access to math practices.
+            </p>
+        </header>
+
+        <!-- Contenedor de Enlaces con Diseño de Módulos (Grid/Flex) -->
+        <main id="links-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Los enlaces serán inyectados aquí por JavaScript -->
+        </main>
+        
+    </div>
+
+    <script>
+        // *** 1. Arreglo JavaScript con los Datos de los Enlaces ***
+        const webLinks = [
+            { id: 'a', title: 'Divisibility Rules', description: 'Visibility rules app description.', url: '/app-roots', icon: '📏' },
+            { id: 'b', title: 'Potencia', description: 'Potencia app description.', url: '/dashboard', icon: '🎚️' },
+            { id: 'c', title: 'Roots', description: 'Potencia roots description.', url: '/profile', icon: '🧮' },
+            
+        ];
+
+        // Se usa la función `crypto.randomUUID()` como fallback si la variable global no existe, 
+        // aunque en el entorno de Canvas siempre estará disponible.
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        // *** 2. Función para Generar el HTML de un Enlace ***
+        function createLinkCard(link) {
+            // Usa un template literal para crear la estructura de la tarjeta
+            return `
+                <a href="${link.url}" class="
+                    group flex items-center p-4 bg-white rounded-xl 
+                    shadow-md hover:shadow-lg transition-all duration-300 
+                    border border-gray-200 hover:border-blue-500
+                ">
+                    <!-- Icono (similar al "a.", "b." de la imagen) -->
+                    <div class="flex-shrink-0 w-8 text-center text-lg font-bold text-blue-600 mr-4">
+                        <span class="inline-block transition-transform duration-300 group-hover:scale-110">
+                            ${link.icon || link.id.toUpperCase() + '.'} 
+                        </span>
+                    </div>
+
+                    <!-- Contenido del Enlace -->
+                    <div class="flex-grow">
+                        <!-- Título del Enlace (similar a las expresiones en azul) -->
+                        <h2 class="text-lg font-semibold text-blue-700 group-hover:text-blue-900 transition-colors">
+                            ${link.title}
+                        </h2>
+                        <!-- Descripción/URL (Texto secundario) -->
+                        <p class="text-sm text-gray-500 mt-0.5">
+                            ${link.description}
+                        </p>
+                    </div>
+
+                    <!-- Botón/Indicador de Acceso Rápido -->
+                    <div class="flex-shrink-0 ml-4">
+                        <span class="
+                            inline-flex items-center justify-center h-8 px-3 text-xs font-medium 
+                            text-white bg-green-500 rounded-full 
+                            opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                            md:text-sm md:px-4 md:h-9
+                        ">
+                            Ir
+                        </span>
+                    </div>
+                </a>
+            `;
+        }
+
+        // *** 3. Función Principal para Renderizar los Enlaces ***
+        function renderLinks() {
+            const container = document.getElementById('links-container');
+            if (!container) return; // Asegura que el contenedor exista
+
+            // Genera todo el HTML de los enlaces
+            const linksHtml = webLinks.map(createLinkCard).join('');
+
+            // Inyecta el HTML en el contenedor
+            container.innerHTML = linksHtml;
+        }
+
+        // Ejecuta la función de renderizado cuando la página esté cargada
+        document.addEventListener('DOMContentLoaded', renderLinks);
+    </script>
+
+</body>
+</html>
