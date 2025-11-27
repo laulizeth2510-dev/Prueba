@@ -193,6 +193,7 @@
             });
 
             // Round the final answer to the display precision for user comparison
+            // This is the number the user MUST match (to 2 decimal places)
             return roundToPrecision(result, FIXED_DISPLAY_PRECISION);
         }
 
@@ -297,7 +298,7 @@
             document.getElementById('scoreDisplay').textContent = `Score: ${state.correctlySolved}/${state.currentProblemIndex}`;
         }
 
-        // --- Interaction Functions (No change needed here) ---
+        // --- Interaction Functions ---
 
         /** Handles the user submitting an answer. */
         function checkAnswer() {
@@ -305,7 +306,8 @@
             const feedbackArea = document.getElementById('feedbackArea');
             const checkButton = document.getElementById('checkButton');
 
-            const userAnswer = parseFloat(inputAnswerElement.value.trim());
+            const userAnswerString = inputAnswerElement.value.trim();
+            const userAnswer = parseFloat(userAnswerString);
 
             // 1. Input Validation
             if (isNaN(userAnswer)) {
@@ -317,18 +319,25 @@
             
             // 2. Comparison
             const correct = state.currentProblem.answer;
-            // Round user answer to match the required precision for comparison (2 decimal places)
-            const userRoundedAnswer = roundToPrecision(userAnswer, FIXED_DISPLAY_PRECISION); 
+            
+            // The required answer formatted to exactly 2 decimal places for strict comparison
+            const correctFormattedString = correct.toFixed(FIXED_DISPLAY_PRECISION);
 
-            // Compare the rounded user answer with the rounded correct answer
-            const isCorrect = userRoundedAnswer === correct;
+            // Check if the user's input string matches the strictly formatted correct answer string
+            // This ensures both the value and the rounding/formatting are correct.
+            const isCorrect = (userAnswerString === correctFormattedString);
 
-            if (isCorrect) {
-                // CORRECT ANSWER
+            // Fallback for cases where parseFloat might handle trailing zeros differently (e.g., input "5" vs "5.00")
+            // This ensures that simple whole numbers are still considered correct if formatted.
+            const isValueCorrectButNotFormatted = roundToPrecision(userAnswer, FIXED_DISPLAY_PRECISION) === correct;
+
+
+            if (isCorrect || (isValueCorrectButNotFormatted && userAnswerString.length <= correctFormattedString.length && correctFormattedString.endsWith('.00'))) {
+                // CORRECT ANSWER: Exact match of the rounded value and the required format (or a simplified version of a whole number)
                 state.correctlySolved++;
                 state.currentProblemIndex++; // Move to next problem
                 
-                feedbackArea.innerHTML = '<strong>Correct!</strong> Well done! Moving to the next problem in 2 seconds... ✅';
+                feedbackArea.innerHTML = '<strong>Correcto!</strong> ¡Bien hecho! El redondeo a dos decimales es correcto. Pasando al siguiente problema en 2 segundos... ✅';
                 feedbackArea.className = 'mt-6 p-4 rounded-xl feedback-input correct';
                 feedbackArea.classList.remove('hidden');
                 
@@ -338,23 +347,54 @@
 
                 setTimeout(nextProblem, 2000);
 
-            } else {
-                // INCORRECT ANSWER
+            } else if (isValueCorrectButNotFormatted) {
+                // INCORRECT FORMAT/ROUNDING: The value is correct, but the number of decimals is wrong (e.g., input 5.673 or 5.6)
                 state.attemptCounters++;
                 const attemptsLeft = MAX_ATTEMPTS - state.attemptCounters;
                 
                 if (attemptsLeft > 0) {
-                    // INCORRECT - Attempts Left
-                    feedbackArea.innerHTML = `<strong>Incorrect.</strong> Please try again. Attempts remaining: ${attemptsLeft}. ❌`;
+                    feedbackArea.innerHTML = `
+                        <strong>Incorrecto.</strong> El valor es casi correcto, pero recuerda: debes ingresar tu respuesta 
+                        <span class="font-bold text-red-700">redondeada exactamente a ${FIXED_DISPLAY_PRECISION} cifras decimales</span>.
+                        Intentos restantes: ${attemptsLeft}. ❌
+                    `;
                     feedbackArea.className = 'mt-6 p-4 rounded-xl feedback-input incorrect';
                 } else {
                     // MAX ATTEMPTS REACHED - Reveal Answer
                     state.currentProblemIndex++; // Move to next problem
                     
                     feedbackArea.innerHTML = `
-                        <strong>Max attempts reached.</strong> The correct answer is: 
-                        <span class="text-2xl font-extrabold text-orange-700">${correct.toFixed(FIXED_DISPLAY_PRECISION)}</span>.
-                        Moving to the next problem in 5 seconds... 😥
+                        <strong>Máximo de intentos alcanzado.</strong> El valor correcto redondeado a dos decimales es: 
+                        <span class="text-2xl font-extrabold text-orange-700">${correctFormattedString}</span>.
+                        Pasando al siguiente problema en 5 segundos... 😥
+                    `;
+                    feedbackArea.className = 'mt-6 p-4 rounded-xl feedback-input failed';
+
+                    // Block input and wait for transition
+                    inputAnswerElement.disabled = true;
+                    checkButton.disabled = true;
+                    
+                    setTimeout(nextProblem, 5000);
+                }
+                feedbackArea.classList.remove('hidden');
+
+            } else {
+                // INCORRECT VALUE: The value is mathematically wrong.
+                state.attemptCounters++;
+                const attemptsLeft = MAX_ATTEMPTS - state.attemptCounters;
+                
+                if (attemptsLeft > 0) {
+                    // INCORRECT - Attempts Left
+                    feedbackArea.innerHTML = `<strong>Incorrecto.</strong> Por favor, inténtalo de nuevo. Intentos restantes: ${attemptsLeft}. ❌`;
+                    feedbackArea.className = 'mt-6 p-4 rounded-xl feedback-input incorrect';
+                } else {
+                    // MAX ATTEMPTS REACHED - Reveal Answer
+                    state.currentProblemIndex++; // Move to next problem
+                    
+                    feedbackArea.innerHTML = `
+                        <strong>Máximo de intentos alcanzado.</strong> El valor correcto redondeado a dos decimales es: 
+                        <span class="text-2xl font-extrabold text-orange-700">${correctFormattedString}</span>.
+                        Pasando al siguiente problema en 5 segundos... 😥
                     `;
                     feedbackArea.className = 'mt-6 p-4 rounded-xl feedback-input failed';
 
