@@ -1,298 +1,364 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Divisibility Rules</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom styles for result box animation */
-        @keyframes fadeInSlide {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+      /* Custom styles for result box animation */
+      @keyframes fadeInSlide {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
         }
-        .animate-result-card {
-            animation: fadeInSlide 0.3s ease-out;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
-        .quiz-option {
-            transition: all 0.2s;
-        }
-        .quiz-option:hover:not(:disabled) {
-            transform: scale(1.05);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-        }
-        .selected-yes {
-            background-color: #3b82f6 !important; /* blue-500 */
-            color: white !important;
-            border-color: #1e40af !important; /* blue-800 */
-        }
-        .selected-no {
-            background-color: #f87171 !important; /* red-400 */
-            color: white !important;
-            border-color: #b91c1c !important; /* red-800 */
-        }
-        /* Style for disabled buttons after answering */
-        .quiz-option:disabled {
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
+      }
+      .animate-result-card {
+        animation: fadeInSlide 0.3s ease-out;
+      }
+      .quiz-option {
+        transition: all 0.2s;
+      }
+      .quiz-option:hover:not(:disabled) {
+        transform: scale(1.05);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -2px rgba(0, 0, 0, 0.1);
+      }
+      .selected-yes {
+        background-color: #3b82f6 !important; /* blue-500 */
+        color: white !important;
+        border-color: #1e40af !important; /* blue-800 */
+      }
+      .selected-no {
+        background-color: #f87171 !important; /* red-400 */
+        color: white !important;
+        border-color: #b91c1c !important; /* red-800 */
+      }
+      /* Style for disabled buttons after answering */
+      .quiz-option:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
     </style>
-</head>
-<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4 font-sans">
+  </head>
+  <body
+    class="bg-gray-50 min-h-screen flex items-center justify-center p-4 font-sans"
+  >
+    <!-- Back to Home Button -->
+    <a
+      href="../index.html"
+      style="
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: white;
+        color: #7b68ee;
+        border: 3px solid #7b68ee;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 16px rgba(123, 104, 238, 0.2);
+        transition: all 0.3s ease;
+        z-index: 1000;
+      "
+    >
+      ← Menú Principal
+    </a>
 
-    <div class="w-full max-w-xl bg-white shadow-2xl rounded-2xl p-6 md:p-10 border border-blue-200">
-        <h1 class="text-3xl font-extrabold text-blue-800 mb-2 text-center">
-            Divisibility Rules
-        </h1>
-        <p class="text-gray-500 mb-6 text-center text-lg">
-            Select YES or NO for each criterion.
+    <div
+      class="w-full max-w-xl bg-white shadow-2xl rounded-2xl p-6 md:p-10 border border-blue-200"
+    >
+      <h1 class="text-3xl font-extrabold text-blue-800 mb-2 text-center">
+        Divisibility Rules
+      </h1>
+      <p class="text-gray-500 mb-6 text-center text-lg">
+        Select YES or NO for each criterion.
+      </p>
+
+      <!-- Number to Analyze -->
+      <div
+        class="text-center mb-6 p-4 border-2 border-indigo-400 bg-indigo-50 rounded-xl shadow-inner"
+      >
+        <p class="text-sm font-medium text-indigo-700 mb-1">
+          Number to Analyze
         </p>
+        <div
+          id="randomNumberDisplay"
+          class="text-6xl font-black text-indigo-900 leading-none"
+        >
+          ...
+        </div>
+      </div>
 
-        <!-- Number to Analyze -->
-        <div class="text-center mb-6 p-4 border-2 border-indigo-400 bg-indigo-50 rounded-xl shadow-inner">
-            <p class="text-sm font-medium text-indigo-700 mb-1">Number to Analyze</p>
-            <div id="randomNumberDisplay" class="text-6xl font-black text-indigo-900 leading-none">
-                ...
-            </div>
-        </div>
+      <!-- Quiz Options (Each item now includes its own feedback area) -->
+      <div id="quizOptions" class="space-y-4 mb-6">
+        <!-- Quiz options and their immediate feedback will be generated here -->
+      </div>
 
-        <!-- Quiz Options (Each item now includes its own feedback area) -->
-        <div id="quizOptions" class="space-y-4 mb-6">
-            <!-- Quiz options and their immediate feedback will be generated here -->
-        </div>
+      <!-- Controls -->
+      <div class="flex space-x-4 mb-8">
+        <button
+          onclick="generateNewNumber()"
+          id="newNumberButton"
+          class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-3 rounded-xl transition duration-150 ease-in-out transform hover:scale-[1.01] shadow-xl shadow-blue-300 uppercase tracking-wider"
+        >
+          New Number
+        </button>
+      </div>
 
-        <!-- Controls -->
-        <div class="flex space-x-4 mb-8">
-            <button
-                onclick="generateNewNumber()"
-                id="newNumberButton"
-                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-3 rounded-xl transition duration-150 ease-in-out transform hover:scale-[1.01] shadow-xl shadow-blue-300 uppercase tracking-wider"
-            >
-                New Number
-            </button>
-        </div>
-        
-        <!-- Final Score Area -->
-        <div id="finalScoreContainer" class="mt-8">
-            <!-- The final score will be inserted here -->
-        </div>
+      <!-- Final Score Area -->
+      <div id="finalScoreContainer" class="mt-8">
+        <!-- The final score will be inserted here -->
+      </div>
     </div>
 
     <script>
-        // --- Quiz State Variables ---
-        let currentNumber = 0;
-        let checksData = []; // Stores the result of getDivisibilityRules()
-        let userAnswers = {};    // {2: null, 3: null, ...}
-        const divisors = [2, 3, 5, 6, 7, 9, 10];
-        
-        // DOM element references
-        const randomNumberDisplay = document.getElementById('randomNumberDisplay');
-        const quizOptionsContainer = document.getElementById('quizOptions');
-        const finalScoreContainer = document.getElementById('finalScoreContainer');
-        
-        // State tracking variables
-        let answersCount = 0;
-        let correctCount = 0;
+      // --- Quiz State Variables ---
+      let currentNumber = 0;
+      let checksData = []; // Stores the result of getDivisibilityRules()
+      let userAnswers = {}; // {2: null, 3: null, ...}
+      const divisors = [2, 3, 5, 6, 7, 9, 10];
 
-        // --- Utilities ---
+      // DOM element references
+      const randomNumberDisplay = document.getElementById(
+        "randomNumberDisplay"
+      );
+      const quizOptionsContainer = document.getElementById("quizOptions");
+      const finalScoreContainer = document.getElementById(
+        "finalScoreContainer"
+      );
 
-        /**
-         * Calculates the sum of the digits of a number (absolute value).
-         */
-        function getSumOfDigits(num) {
-            return String(Math.abs(num)).split('')
-                .map(Number)
-                .reduce((sum, digit) => sum + digit, 0);
-        }
+      // State tracking variables
+      let answersCount = 0;
+      let correctCount = 0;
 
-        /**
-         * Generates the divisibility rules and the correct answers.
-         */
-        function getDivisibilityRules(num) {
-            const absNumber = Math.abs(num);
-            const sumOfDigits = getSumOfDigits(num);
-            const lastDigit = absNumber % 10;
-            
-            return [
-                {
-                    divisor: 2,
-                    isMultiple: absNumber % 2 === 0,
-                    rule: `The number ${absNumber} ends in ${lastDigit}. To be a multiple of 2, the last digit must be 0, 2, 4, 6, or 8.`,
-                    icon: '🔢'
-                },
-                {
-                    divisor: 3,
-                    isMultiple: sumOfDigits % 3 === 0,
-                    rule: `The sum of its digits is ${sumOfDigits}. To be a multiple of 3, the sum of its digits (${sumOfDigits}) must be divisible by 3.`,
-                    icon: '➕'
-                },
-                {
-                    divisor: 5,
-                    isMultiple: lastDigit === 0 || lastDigit === 5,
-                    rule: `The number ${absNumber} ends in ${lastDigit}. To be a multiple of 5, the last digit must be 0 or 5.`,
-                    icon: '✋'
-                },
-                {
-                    divisor: 6,
-                    isMultiple: (absNumber % 2 === 0) && (sumOfDigits % 3 === 0),
-                    rule: `It must be a multiple of 2 AND 3 simultaneously. Check if the divisibility rules for 2 and 3 are met.`,
-                    icon: '🔄'
-                },
-                {
-                    divisor: 7,
-                    isMultiple: absNumber % 7 === 0,
-                    rule: `The simplest way is to divide ${absNumber} by 7. Rule: Subtract twice the last digit from the remaining number; the result must be divisible by 7.`,
-                    icon: '⭐'
-                },
-                {
-                    divisor: 9,
-                    isMultiple: sumOfDigits % 9 === 0,
-                    rule: `The sum of its digits is ${sumOfDigits}. To be a multiple of 9, the sum of its digits (${sumOfDigits}) must be divisible by 9.`,
-                    icon: '✨'
-                },
-                {
-                    divisor: 10,
-                    isMultiple: lastDigit === 0,
-                    rule: `The number ${absNumber} ends in ${lastDigit}. To be a multiple of 10, the last digit must be 0.`,
-                    icon: '🔟'
-                }
-            ];
-        }
+      // --- Utilities ---
 
-        // --- Quiz Logic ---
-        
-        /**
-         * Renders the individual feedback card for a divisor directly below its question.
-         * @param {number} divisor - The divisor checked.
-         */
-        function renderIndividualFeedback(divisor) {
-            const check = checksData.find(c => c.divisor === divisor);
-            const userAnswer = userAnswers[divisor];
-            const isCorrect = userAnswer === check.isMultiple;
+      /**
+       * Calculates the sum of the digits of a number (absolute value).
+       */
+      function getSumOfDigits(num) {
+        return String(Math.abs(num))
+          .split("")
+          .map(Number)
+          .reduce((sum, digit) => sum + digit, 0);
+      }
 
-            if (isCorrect) correctCount++;
-            answersCount++;
+      /**
+       * Generates the divisibility rules and the correct answers.
+       */
+      function getDivisibilityRules(num) {
+        const absNumber = Math.abs(num);
+        const sumOfDigits = getSumOfDigits(num);
+        const lastDigit = absNumber % 10;
 
-            const colorClass = isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50';
-            const resultText = isCorrect ? 'Correct!' : 'Incorrect!';
-            const feedbackIcon = isCorrect ? '✅' : '❌';
-            const correctLabel = check.isMultiple ? 'YES, it is a multiple' : 'NO, it is not a multiple';
+        return [
+          {
+            divisor: 2,
+            isMultiple: absNumber % 2 === 0,
+            rule: `The number ${absNumber} ends in ${lastDigit}. To be a multiple of 2, the last digit must be 0, 2, 4, 6, or 8.`,
+            icon: "🔢",
+          },
+          {
+            divisor: 3,
+            isMultiple: sumOfDigits % 3 === 0,
+            rule: `The sum of its digits is ${sumOfDigits}. To be a multiple of 3, the sum of its digits (${sumOfDigits}) must be divisible by 3.`,
+            icon: "➕",
+          },
+          {
+            divisor: 5,
+            isMultiple: lastDigit === 0 || lastDigit === 5,
+            rule: `The number ${absNumber} ends in ${lastDigit}. To be a multiple of 5, the last digit must be 0 or 5.`,
+            icon: "✋",
+          },
+          {
+            divisor: 6,
+            isMultiple: absNumber % 2 === 0 && sumOfDigits % 3 === 0,
+            rule: `It must be a multiple of 2 AND 3 simultaneously. Check if the divisibility rules for 2 and 3 are met.`,
+            icon: "🔄",
+          },
+          {
+            divisor: 7,
+            isMultiple: absNumber % 7 === 0,
+            rule: `The simplest way is to divide ${absNumber} by 7. Rule: Subtract twice the last digit from the remaining number; the result must be divisible by 7.`,
+            icon: "⭐",
+          },
+          {
+            divisor: 9,
+            isMultiple: sumOfDigits % 9 === 0,
+            rule: `The sum of its digits is ${sumOfDigits}. To be a multiple of 9, the sum of its digits (${sumOfDigits}) must be divisible by 9.`,
+            icon: "✨",
+          },
+          {
+            divisor: 10,
+            isMultiple: lastDigit === 0,
+            rule: `The number ${absNumber} ends in ${lastDigit}. To be a multiple of 10, the last digit must be 0.`,
+            icon: "🔟",
+          },
+        ];
+      }
 
-            const targetContainer = document.getElementById(`feedback-container-${divisor}`);
+      // --- Quiz Logic ---
 
-            const feedbackItem = document.createElement('div');
-            feedbackItem.className = `p-4 mt-2 rounded-xl border-l-4 shadow-md animate-result-card transition-all duration-300 ${colorClass}`;
-            feedbackItem.innerHTML = `
+      /**
+       * Renders the individual feedback card for a divisor directly below its question.
+       * @param {number} divisor - The divisor checked.
+       */
+      function renderIndividualFeedback(divisor) {
+        const check = checksData.find((c) => c.divisor === divisor);
+        const userAnswer = userAnswers[divisor];
+        const isCorrect = userAnswer === check.isMultiple;
+
+        if (isCorrect) correctCount++;
+        answersCount++;
+
+        const colorClass = isCorrect
+          ? "border-green-500 bg-green-50"
+          : "border-red-500 bg-red-50";
+        const resultText = isCorrect ? "Correct!" : "Incorrect!";
+        const feedbackIcon = isCorrect ? "✅" : "❌";
+        const correctLabel = check.isMultiple
+          ? "YES, it is a multiple"
+          : "NO, it is not a multiple";
+
+        const targetContainer = document.getElementById(
+          `feedback-container-${divisor}`
+        );
+
+        const feedbackItem = document.createElement("div");
+        feedbackItem.className = `p-4 mt-2 rounded-xl border-l-4 shadow-md animate-result-card transition-all duration-300 ${colorClass}`;
+        feedbackItem.innerHTML = `
                 <div class="flex items-center justify-between">
                     <h3 class="text-xl font-bold text-gray-800 flex items-center">
                         ${feedbackIcon} Result for Multiple of ${divisor}
                     </h3>
-                    <span class="text-lg font-extrabold px-3 py-1 rounded-full ${isCorrect ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}">
+                    <span class="text-lg font-extrabold px-3 py-1 rounded-full ${
+                      isCorrect
+                        ? "bg-green-600 text-white"
+                        : "bg-red-600 text-white"
+                    }">
                         ${resultText}
                     </span>
                 </div>
                 <p class="mt-2 text-gray-700">
-                    <span class="font-semibold text-blue-700">Your Answer:</span> ${userAnswer ? 'YES' : 'NO'}
+                    <span class="font-semibold text-blue-700">Your Answer:</span> ${
+                      userAnswer ? "YES" : "NO"
+                    }
                     <span class="ml-4 font-semibold text-blue-700">Correct Answer:</span> ${correctLabel}
                 </p>
                 <p class="mt-1 text-gray-600 border-t border-gray-200 pt-2">
-                    <span class="font-semibold text-blue-700">Divisibility Rule:</span> ${check.rule}
+                    <span class="font-semibold text-blue-700">Divisibility Rule:</span> ${
+                      check.rule
+                    }
                 </p>
             `;
-            
-            // Clear previous feedback and append the new one
-            targetContainer.innerHTML = '';
-            targetContainer.appendChild(feedbackItem);
-            
-            // If all answers have been given, display the final score
-            if (answersCount === divisors.length) {
-                displayFinalScore();
-            }
+
+        // Clear previous feedback and append the new one
+        targetContainer.innerHTML = "";
+        targetContainer.appendChild(feedbackItem);
+
+        // If all answers have been given, display the final score
+        if (answersCount === divisors.length) {
+          displayFinalScore();
         }
-        
-        /**
-         * Displays the final score summary.
-         */
-        function displayFinalScore() {
-            const totalChecks = divisors.length;
-            const scoreMessage = `Final Score: ${correctCount} out of ${totalChecks} (${((correctCount / totalChecks) * 100).toFixed(0)}%)`;
-            
-            const scoreBox = document.createElement('div');
-            scoreBox.className = 'text-center p-4 mb-6 bg-blue-100 border-2 border-blue-400 rounded-xl shadow-lg animate-result-card';
-            scoreBox.innerHTML = `<h2 class="text-2xl font-black text-blue-800">${scoreMessage}</h2>`;
+      }
 
-            finalScoreContainer.innerHTML = ''; // Clear previous score
-            finalScoreContainer.appendChild(scoreBox);
-        }
+      /**
+       * Displays the final score summary.
+       */
+      function displayFinalScore() {
+        const totalChecks = divisors.length;
+        const scoreMessage = `Final Score: ${correctCount} out of ${totalChecks} (${(
+          (correctCount / totalChecks) *
+          100
+        ).toFixed(0)}%)`;
 
-        /**
-         * Selects the user's answer, gives individual feedback, and initiates the final check if necessary.
-         * @param {number} divisor - The divisor to which the answer applies.
-         * @param {boolean} answer - The user's answer (true = YES, false = NO).
-         * @param {HTMLElement} btnYes - YES button.
-         * @param {HTMLElement} btnNo - NO button.
-         */
-        function selectAnswer(divisor, answer, btnYes, btnNo) {
-            // If an answer is already registered (and buttons are disabled), do nothing
-            if (userAnswers[divisor] !== null) return; 
+        const scoreBox = document.createElement("div");
+        scoreBox.className =
+          "text-center p-4 mb-6 bg-blue-100 border-2 border-blue-400 rounded-xl shadow-lg animate-result-card";
+        scoreBox.innerHTML = `<h2 class="text-2xl font-black text-blue-800">${scoreMessage}</h2>`;
 
-            userAnswers[divisor] = answer;
-            
-            // Visual selection logic
-            if (answer === true) {
-                btnYes.classList.add('selected-yes');
-            } else {
-                btnNo.classList.add('selected-no');
-            }
-            
-            // Disable buttons for this criterion once answered
-            btnYes.disabled = true;
-            btnNo.disabled = true;
+        finalScoreContainer.innerHTML = ""; // Clear previous score
+        finalScoreContainer.appendChild(scoreBox);
+      }
 
-            // Give immediate feedback
-            renderIndividualFeedback(divisor);
+      /**
+       * Selects the user's answer, gives individual feedback, and initiates the final check if necessary.
+       * @param {number} divisor - The divisor to which the answer applies.
+       * @param {boolean} answer - The user's answer (true = YES, false = NO).
+       * @param {HTMLElement} btnYes - YES button.
+       * @param {HTMLElement} btnNo - NO button.
+       */
+      function selectAnswer(divisor, answer, btnYes, btnNo) {
+        // If an answer is already registered (and buttons are disabled), do nothing
+        if (userAnswers[divisor] !== null) return;
+
+        userAnswers[divisor] = answer;
+
+        // Visual selection logic
+        if (answer === true) {
+          btnYes.classList.add("selected-yes");
+        } else {
+          btnNo.classList.add("selected-no");
         }
 
-        /**
-         * Generates a new random number and resets the quiz.
-         */
-        function generateNewNumber() {
-            // Generate a random number between 1 and 1000 (excluding 0)
-            currentNumber = Math.floor(Math.random() * 999) + 1; 
-            
-            // Reset state and counters
-            userAnswers = {};
-            answersCount = 0;
-            correctCount = 0;
-            finalScoreContainer.innerHTML = '';
-            
-            // Update the UI
-            randomNumberDisplay.textContent = currentNumber;
-            
-            // Calculate and store the rules and correct answers
-            checksData = getDivisibilityRules(currentNumber);
-            renderQuizOptions(checksData);
-        }
+        // Disable buttons for this criterion once answered
+        btnYes.disabled = true;
+        btnNo.disabled = true;
 
-        /**
-         * Renders the YES/NO buttons for each divisor, including the dedicated feedback slot.
-         * @param {Array} checks - List of divisors and rules.
-         */
-        function renderQuizOptions(checks) {
-            quizOptionsContainer.innerHTML = '';
+        // Give immediate feedback
+        renderIndividualFeedback(divisor);
+      }
 
-            checks.forEach(check => {
-                const divisor = check.divisor;
-                
-                // Initialize user answer
-                userAnswers[divisor] = null;
+      /**
+       * Generates a new random number and resets the quiz.
+       */
+      function generateNewNumber() {
+        // Generate a random number between 1 and 1000 (excluding 0)
+        currentNumber = Math.floor(Math.random() * 999) + 1;
 
-                const optionDiv = document.createElement('div');
-                // The main container for the question and its feedback
-                optionDiv.className = 'space-y-3 p-4 bg-white rounded-xl shadow-md border border-gray-200';
-                
-                optionDiv.innerHTML = `
+        // Reset state and counters
+        userAnswers = {};
+        answersCount = 0;
+        correctCount = 0;
+        finalScoreContainer.innerHTML = "";
+
+        // Update the UI
+        randomNumberDisplay.textContent = currentNumber;
+
+        // Calculate and store the rules and correct answers
+        checksData = getDivisibilityRules(currentNumber);
+        renderQuizOptions(checksData);
+      }
+
+      /**
+       * Renders the YES/NO buttons for each divisor, including the dedicated feedback slot.
+       * @param {Array} checks - List of divisors and rules.
+       */
+      function renderQuizOptions(checks) {
+        quizOptionsContainer.innerHTML = "";
+
+        checks.forEach((check) => {
+          const divisor = check.divisor;
+
+          // Initialize user answer
+          userAnswers[divisor] = null;
+
+          const optionDiv = document.createElement("div");
+          // The main container for the question and its feedback
+          optionDiv.className =
+            "space-y-3 p-4 bg-white rounded-xl shadow-md border border-gray-200";
+
+          optionDiv.innerHTML = `
                     <div class="flex items-center justify-between p-3 bg-gray-100 rounded-xl shadow-inner">
                         <span class="text-lg font-semibold text-gray-700 flex items-center">
                             ${check.icon} &nbsp; Multiple of <span class="text-2xl ml-1 mr-2 font-black">${divisor}</span>?
@@ -305,24 +371,35 @@
                     <!-- Dedicated container for feedback, inserted right here -->
                     <div id="feedback-container-${divisor}" class="pt-2"></div>
                 `;
-                
-                quizOptionsContainer.appendChild(optionDiv);
 
-                // Assign listeners after attaching to the DOM
-                const btnYes = document.getElementById(`btnYes${divisor}`);
-                const btnNo = document.getElementById(`btnNo${divisor}`);
-                
-                // Use bind to pass the correct parameters to selectAnswer
-                btnYes.onclick = selectAnswer.bind(null, divisor, true, btnYes, btnNo);
-                btnNo.onclick = selectAnswer.bind(null, divisor, false, btnYes, btnNo);
-            });
-        }
+          quizOptionsContainer.appendChild(optionDiv);
 
-        // --- Initialization ---
-        window.onload = () => {
-            generateNewNumber();
-        };
+          // Assign listeners after attaching to the DOM
+          const btnYes = document.getElementById(`btnYes${divisor}`);
+          const btnNo = document.getElementById(`btnNo${divisor}`);
 
+          // Use bind to pass the correct parameters to selectAnswer
+          btnYes.onclick = selectAnswer.bind(
+            null,
+            divisor,
+            true,
+            btnYes,
+            btnNo
+          );
+          btnNo.onclick = selectAnswer.bind(
+            null,
+            divisor,
+            false,
+            btnYes,
+            btnNo
+          );
+        });
+      }
+
+      // --- Initialization ---
+      window.onload = () => {
+        generateNewNumber();
+      };
     </script>
-</body>
+  </body>
 </html>

@@ -1,113 +1,142 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página de Índice de Sitios Web</title>
-    <!-- Incluye Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Configuración para usar la fuente Inter -->
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f8ff; /* Fondo muy claro, similar a la referencia */
-        }
-    </style>
-</head>
-<body class="min-h-screen p-4 sm:p-8 flex flex-col items-center">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Math Challenges - Ages 10-16</title>
+    <meta
+      name="description"
+      content="Fun and colorful math challenges for students aged 10-16. Practice divisibility, fractions, decimals, and more!"
+    />
+    <link rel="stylesheet" href="shared-styles.css" />
+  </head>
+  <body>
+    <!-- Decorative Doodles -->
+    <div class="doodle doodle-1">🎨</div>
+    <div class="doodle doodle-2">📐</div>
+    <div class="doodle doodle-3">✏️</div>
+    <div class="doodle doodle-4">🧮</div>
 
-    <!-- Contenedor Principal Centrado -->
-    <div id="app-container" class="w-full max-w-4xl">
+    <div class="container">
+      <!-- Header Section -->
+      <header class="header">
+        <h1>MATH CHALLENGES</h1>
+        <p class="subtitle">
+          Ages 10-16 | ¡Aprende matemáticas de forma divertida!
+        </p>
+      </header>
 
-        <!-- Encabezado Inspirado en la Referencia -->
-        <header class="text-center mb-8 p-6 bg-white rounded-xl shadow-lg border-b-4 border-blue-600">
-            <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-800 mb-2">
-                Math APPs
-            </h1>
-            <p class="text-gray-600 text-lg">
-                Explore quick access to math practices.
-            </p>
-        </header>
-
-        <!-- Contenedor de Enlaces con Diseño de Módulos (Grid/Flex) -->
-        <main id="links-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Los enlaces serán inyectados aquí por JavaScript -->
-        </main>
-        
+      <!-- Main Content -->
+      <main>
+        <div id="links-container" class="grid">
+          <!-- Challenge cards will be injected here by JavaScript -->
+        </div>
+      </main>
     </div>
 
     <script>
-        // *** 1. Arreglo JavaScript con los Datos de los Enlaces ***
-        const webLinks = [
-            { id: 'a', title: 'Divisibility Rules', description: 'Visibility rules app description.', url: 'app-divisibility-rules', icon: '📏' },
-            { id: 'b', title: 'Potencia', description: 'Potencia app description.', url: 'app-potencia', icon: '🎚️' },
-            { id: 'c', title: 'Roots', description: 'Potencia roots description.', url: 'app-roots', icon: '🧮' },
-            
-        ];
+      // *** Challenge Data ***
+      const challenges = [
+        {
+          id: "divisibility",
+          title: "Divisibility Rules",
+          description: "Learn the rules of divisibility with fun exercises!",
+          url: "app-divisibility-rules/index.html",
+          icon: "📏",
+          color: "orange",
+        },
+        {
+          id: "potencia",
+          title: "Powers & Exponents",
+          description: "Master the power of exponents!",
+          url: "app-potencia/index.html",
+          icon: "⚡",
+          color: "purple",
+        },
+        {
+          id: "roots",
+          title: "Square Roots",
+          description: "Discover the magic of square roots!",
+          url: "app-roots/index.html",
+          icon: "√",
+          color: "blue",
+        },
+        {
+          id: "decimals",
+          title: "Decimal Addition",
+          description: "Practice adding and subtracting decimals!",
+          url: "app-DecimalAddition/index.html",
+          icon: "🔢",
+          color: "green",
+        },
+        {
+          id: "fractions-add",
+          title: "Fraction Addition",
+          description: "Add and subtract fractions like a pro!",
+          url: "app-additionSubtractionFractions/index.html",
+          icon: "🍕",
+          color: "pink",
+        },
+        {
+          id: "fractions-mult",
+          title: "Fraction Multiplication",
+          description: "Multiply and divide fractions with ease!",
+          url: "app-MultiplicacionDivisionFractions/index.html",
+          icon: "✖️",
+          color: "teal",
+        },
+        {
+          id: "decimals-mult",
+          title: "Decimal Multiplication",
+          description: "Multiply and divide decimals!",
+          url: "app-MultiDiviDecimals/index.html",
+          icon: "🎯",
+          color: "orange",
+        },
+        {
+          id: "rules",
+          title: "More Divisibility",
+          description: "Extra practice with divisibility!",
+          url: "app-rulesdivisibiliyy/index.html",
+          icon: "🎲",
+          color: "purple",
+        },
+      ];
 
-        // Se usa la función `crypto.randomUUID()` como fallback si la variable global no existe, 
-        // aunque en el entorno de Canvas siempre estará disponible.
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-        // *** 2. Función para Generar el HTML de un Enlace ***
-        function createLinkCard(link) {
-            // Usa un template literal para crear la estructura de la tarjeta
-            return `
-                <a href="${link.url}" class="
-                    group flex items-center p-4 bg-white rounded-xl 
-                    shadow-md hover:shadow-lg transition-all duration-300 
-                    border border-gray-200 hover:border-blue-500
-                ">
-                    <!-- Icono (similar al "a.", "b." de la imagen) -->
-                    <div class="flex-shrink-0 w-8 text-center text-lg font-bold text-blue-600 mr-4">
-                        <span class="inline-block transition-transform duration-300 group-hover:scale-110">
-                            ${link.icon || link.id.toUpperCase() + '.'} 
-                        </span>
+      // *** Function to Create Challenge Card HTML ***
+      function createChallengeCard(challenge) {
+        return `
+                <a href="${challenge.url}" class="challenge-card">
+                    <div class="challenge-icon">${challenge.icon}</div>
+                    <div class="challenge-content">
+                        <h3 class="challenge-title">${challenge.title}</h3>
+                        <p class="challenge-description">${challenge.description}</p>
                     </div>
-
-                    <!-- Contenido del Enlace -->
-                    <div class="flex-grow">
-                        <!-- Título del Enlace (similar a las expresiones en azul) -->
-                        <h2 class="text-lg font-semibold text-blue-700 group-hover:text-blue-900 transition-colors">
-                            ${link.title}
-                        </h2>
-                        <!-- Descripción/URL (Texto secundario) -->
-                        <p class="text-sm text-gray-500 mt-0.5">
-                            ${link.description}
-                        </p>
-                    </div>
-
-                    <!-- Botón/Indicador de Acceso Rápido -->
-                    <div class="flex-shrink-0 ml-4">
-                        <span class="
-                            inline-flex items-center justify-center h-8 px-3 text-xs font-medium 
-                            text-white bg-green-500 rounded-full 
-                            opacity-0 group-hover:opacity-100 transition-opacity duration-300
-                            md:text-sm md:px-4 md:h-9
-                        ">
-                            Ir
-                        </span>
-                    </div>
+                    <div class="challenge-arrow">→</div>
                 </a>
             `;
-        }
+      }
 
-        // *** 3. Función Principal para Renderizar los Enlaces ***
-        function renderLinks() {
-            const container = document.getElementById('links-container');
-            if (!container) return; // Asegura que el contenedor exista
+      // *** Render Challenge Cards ***
+      function renderChallenges() {
+        const container = document.getElementById("links-container");
+        if (!container) return;
 
-            // Genera todo el HTML de los enlaces
-            const linksHtml = webLinks.map(createLinkCard).join('');
+        const cardsHtml = challenges.map(createChallengeCard).join("");
+        container.innerHTML = cardsHtml;
+      }
 
-            // Inyecta el HTML en el contenedor
-            container.innerHTML = linksHtml;
-        }
+      // *** Initialize on Page Load ***
+      document.addEventListener("DOMContentLoaded", () => {
+        renderChallenges();
 
-        // Ejecuta la función de renderizado cuando la página esté cargada
-        document.addEventListener('DOMContentLoaded', renderLinks);
+        // Add subtle animation to doodles
+        const doodles = document.querySelectorAll(".doodle");
+        doodles.forEach((doodle, index) => {
+          doodle.style.animation = `bounce ${2 + index * 0.5}s infinite`;
+          doodle.style.animationDelay = `${index * 0.2}s`;
+        });
+      });
     </script>
-
-</body>
+  </body>
 </html>

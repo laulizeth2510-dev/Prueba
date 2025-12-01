@@ -1,396 +1,460 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Decimal Operations Workshop</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom styles for the division problem to mimic the long division format */
-        .problem-container {
-            font-family: 'Inter', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            /* Large font size for operation numbers (Division and Multiplication) */
-            font-size: 2.5rem; 
-            font-weight: 700;
-            color: #374151; /* Gray 700 */
-        }
-        
-        /* Style for the divisor (the number outside the box) */
-        .divisor {
-            padding-right: 0.5rem;
-        }
+      /* Custom styles for the division problem to mimic the long division format */
+      .problem-container {
+        font-family: "Inter", sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* Large font size for operation numbers (Division and Multiplication) */
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #374151; /* Gray 700 */
+      }
 
-        /* Style for the dividend (the number inside the box) */
-        .dividend {
-            /* Mimics the 'box' line for long division */
-            border-left: 3px solid #374151; 
-            border-top: 3px solid #374151; 
-            padding-left: 1rem;
-            padding-top: 0.25rem;
-            padding-bottom: 0.25rem;
-        }
+      /* Style for the divisor (the number outside the box) */
+      .divisor {
+        padding-right: 0.5rem;
+      }
 
-        .feedback-input {
-            border-left: 4px solid;
-            padding-left: 0.75rem;
-            transition: all 0.2s;
-        }
-        .correct { border-left-color: #10b981; /* Green 500 */ }
-        .incorrect { border-left-color: #ef4444; /* Red 500 */ }
-        .failed { border-left-color: #f97316; /* Orange 500 */ }
+      /* Style for the dividend (the number inside the box) */
+      .dividend {
+        /* Mimics the 'box' line for long division */
+        border-left: 3px solid #374151;
+        border-top: 3px solid #374151;
+        padding-left: 1rem;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+      }
+
+      .feedback-input {
+        border-left: 4px solid;
+        padding-left: 0.75rem;
+        transition: all 0.2s;
+      }
+      .correct {
+        border-left-color: #10b981; /* Green 500 */
+      }
+      .incorrect {
+        border-left-color: #ef4444; /* Red 500 */
+      }
+      .failed {
+        border-left-color: #f97316; /* Orange 500 */
+      }
     </style>
-</head>
-<body class="bg-gray-50 min-h-screen flex flex-col items-center p-4 font-sans">
+  </head>
+  <body
+    class="bg-gray-50 min-h-screen flex flex-col items-center p-4 font-sans"
+  >
+    <!-- Back to Home Button -->
+    <a
+      href="../index.html"
+      style="
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: white;
+        color: #7b68ee;
+        border: 3px solid #7b68ee;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 16px rgba(123, 104, 238, 0.2);
+        transition: all 0.3s ease;
+        z-index: 1000;
+      "
+    >
+      ← Menú Principal
+    </a>
 
-    <div class="w-full max-w-3xl bg-white shadow-2xl rounded-2xl p-6 md:p-8 mt-8 border border-orange-200">
-        <h1 class="text-3xl font-extrabold text-orange-700 mb-2 text-center" id="problemTitle">
-            Decimal Operations Practice
-        </h1>
-        <p class="text-gray-500 mb-6 text-center text-lg" id="problemDescription">
-            Loading description...
+    <div
+      class="w-full max-w-3xl bg-white shadow-2xl rounded-2xl p-6 md:p-8 mt-8 border border-orange-200"
+    >
+      <h1
+        class="text-3xl font-extrabold text-orange-700 mb-2 text-center"
+        id="problemTitle"
+      >
+        Decimal Operations Practice
+      </h1>
+      <p class="text-gray-500 mb-6 text-center text-lg" id="problemDescription">
+        Loading description...
+      </p>
+
+      <!-- Progress Bar -->
+      <div class="mb-6">
+        <div class="text-sm text-gray-600 mb-1 flex justify-between">
+          <span>Problem <span id="currentProblemDisplay">1</span> of 20</span>
+          <span id="scoreDisplay">Score: 0/0</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-3">
+          <div
+            id="progressBar"
+            class="bg-orange-500 h-3 rounded-full transition-all duration-500"
+            style="width: 0%"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Exercise Area -->
+      <div
+        class="flex flex-col items-center justify-center p-6 bg-orange-50 rounded-xl mb-6 shadow-inner min-h-[150px]"
+      >
+        <div id="problemDisplay" class="problem-container">
+          <!-- Problem generated here -->
+          <p class="text-gray-500 text-xl">Loading problem...</p>
+        </div>
+        <p class="text-sm text-gray-400 mt-2" id="inputHint">
+          <!-- Dynamic Hint: Quotient or Product -->
         </p>
+      </div>
 
-        <!-- Progress Bar -->
-        <div class="mb-6">
-            <div class="text-sm text-gray-600 mb-1 flex justify-between">
-                <span>Problem <span id="currentProblemDisplay">1</span> of 20</span>
-                <span id="scoreDisplay">Score: 0/0</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-3">
-                <div id="progressBar" class="bg-orange-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
-            </div>
-        </div>
+      <!-- Input and Verification -->
+      <div id="interactionArea" class="flex flex-col items-center space-y-4">
+        <div class="text-xl font-bold text-gray-700">Your Answer:</div>
 
-        <!-- Exercise Area -->
-        <div class="flex flex-col items-center justify-center p-6 bg-orange-50 rounded-xl mb-6 shadow-inner min-h-[150px]">
-            <div id="problemDisplay" class="problem-container">
-                <!-- Problem generated here -->
-                <p class="text-gray-500 text-xl">Loading problem...</p>
-            </div>
-            <p class="text-sm text-gray-400 mt-2" id="inputHint">
-                <!-- Dynamic Hint: Quotient or Product -->
-            </p>
-        </div>
+        <input
+          type="number"
+          step="any"
+          id="inputAnswer"
+          placeholder="Ex: 123.4567"
+          class="w-64 p-3 text-center border-2 border-gray-300 rounded-lg text-2xl focus:border-orange-500 focus:ring-orange-500 transition duration-150"
+        />
 
-        <!-- Input and Verification -->
-        <div id="interactionArea" class="flex flex-col items-center space-y-4">
-            <div class="text-xl font-bold text-gray-700">Your Answer:</div>
-            
-            <input type="number" step="any" id="inputAnswer" placeholder="Ex: 123.4567" class="w-64 p-3 text-center border-2 border-gray-300 rounded-lg text-2xl focus:border-orange-500 focus:ring-orange-500 transition duration-150">
+        <button
+          onclick="checkAnswer()"
+          id="checkButton"
+          class="w-full max-w-xs bg-orange-500 hover:bg-orange-600 text-white font-extrabold py-3 rounded-xl transition duration-150 shadow-lg mt-4 uppercase tracking-wider disabled:bg-gray-400"
+        >
+          Check Answer
+        </button>
+      </div>
 
-            <button
-                onclick="checkAnswer()"
-                id="checkButton"
-                class="w-full max-w-xs bg-orange-500 hover:bg-orange-600 text-white font-extrabold py-3 rounded-xl transition duration-150 shadow-lg mt-4 uppercase tracking-wider disabled:bg-gray-400"
-            >
-                Check Answer
-            </button>
-        </div>
-
-        <!-- Feedback and Next Problem Area -->
-        <div id="feedbackArea" class="mt-6 p-4 rounded-xl hidden">
-            <!-- Feedback message here -->
-        </div>
-        
+      <!-- Feedback and Next Problem Area -->
+      <div id="feedbackArea" class="mt-6 p-4 rounded-xl hidden">
+        <!-- Feedback message here -->
+      </div>
     </div>
 
     <script>
-        // --- Configuration ---
-        const TOTAL_PROBLEMS = 20;
-        const NUM_MULTIPLICATION = 5; // Problems 1 to 5
-        const MAX_ATTEMPTS = 3;
-        // Maximum decimals allowed for the exact quotient (division)
-        const MAX_QUOTIENT_DECIMALS = 4; 
-        // Tolerance for comparison.
-        const EPSILON = 1e-7; 
+      // --- Configuration ---
+      const TOTAL_PROBLEMS = 20;
+      const NUM_MULTIPLICATION = 5; // Problems 1 to 5
+      const MAX_ATTEMPTS = 3;
+      // Maximum decimals allowed for the exact quotient (division)
+      const MAX_QUOTIENT_DECIMALS = 4;
+      // Tolerance for comparison.
+      const EPSILON = 1e-7;
 
-        // --- State ---
-        let state = {
-            currentProblemIndex: 0, // 0-based index
-            correctlySolved: 0,
-            currentProblem: null, // Stores { op1: 0, op2: 0, answer: 0, type: 'Multiplication'/'Division' }
-            attemptCounters: 0,
+      // --- State ---
+      let state = {
+        currentProblemIndex: 0, // 0-based index
+        correctlySolved: 0,
+        currentProblem: null, // Stores { op1: 0, op2: 0, answer: 0, type: 'Multiplication'/'Division' }
+        attemptCounters: 0,
+      };
+
+      // --- Problem Generation Logic ---
+
+      /** Generates a decimal number with a maximum of 'maxDigits' total digits. */
+      function generateDecimalFactor(maxDigits) {
+        // Decide the number of decimals (0 to maxDigits - 1)
+        const numDecimals = Math.floor(Math.random() * (maxDigits - 1)) + 1;
+        // The whole part has the remaining digits
+        const numWholeDigits = maxDigits - numDecimals;
+
+        let factor;
+        if (numWholeDigits > 0) {
+          // Generate whole part (from 1 up to 10^(numWholeDigits) - 1)
+          const maxWhole = Math.pow(10, numWholeDigits) - 1;
+          const minWhole = Math.pow(10, numWholeDigits - 1) || 1;
+          const wholePart =
+            Math.floor(Math.random() * (maxWhole - minWhole + 1)) + minWhole;
+
+          // Generate decimal part
+          let decimalPart = 0;
+          if (numDecimals > 0) {
+            decimalPart = parseFloat(Math.random().toFixed(numDecimals));
+          }
+
+          factor = wholePart + decimalPart;
+        } else {
+          // Only decimals (e.g., 0.1234)
+          factor = Math.random();
+        }
+
+        // Ensure it is displayed with the appropriate precision
+        return parseFloat(factor.toFixed(numDecimals));
+      }
+
+      /** Generates a Multiplication problem (factor1 x factor2). */
+      function generateMultiplicationProblem() {
+        // Maximum 4 total digits per factor (e.g., 12.34 or 123.4)
+        const factor1 = generateDecimalFactor(4);
+        const factor2 = generateDecimalFactor(4);
+
+        const product = factor1 * factor2;
+
+        // The answer is stored with high precision for comparison.
+        const answer = parseFloat(product.toFixed(8));
+
+        return {
+          op1: factor1,
+          op2: factor2,
+          answer: answer,
+          type: "Multiplication",
         };
+      }
 
-        // --- Problem Generation Logic ---
+      /** Generates a Division problem (dividend / divisor) with an exact zero remainder. */
+      function generateDivisionProblem() {
+        let divisor, dividend, quotient;
 
-        /** Generates a decimal number with a maximum of 'maxDigits' total digits. */
-        function generateDecimalFactor(maxDigits) {
-            // Decide the number of decimals (0 to maxDigits - 1)
-            const numDecimals = Math.floor(Math.random() * (maxDigits - 1)) + 1; 
-            // The whole part has the remaining digits
-            const numWholeDigits = maxDigits - numDecimals;
+        // 1. Generate the Quotient (Exact answer, max 4 decimals)
+        const quotientWhole = Math.floor(Math.random() * 990) + 10;
+        const quotientPrecision =
+          Math.floor(Math.random() * MAX_QUOTIENT_DECIMALS) + 1;
 
-            let factor;
-            if (numWholeDigits > 0) {
-                // Generate whole part (from 1 up to 10^(numWholeDigits) - 1)
-                const maxWhole = Math.pow(10, numWholeDigits) - 1;
-                const minWhole = Math.pow(10, numWholeDigits - 1) || 1;
-                const wholePart = Math.floor(Math.random() * (maxWhole - minWhole + 1)) + minWhole;
-                
-                // Generate decimal part
-                let decimalPart = 0;
-                if (numDecimals > 0) {
-                    decimalPart = parseFloat(Math.random().toFixed(numDecimals));
-                }
+        quotient = (quotientWhole + Math.random()).toFixed(quotientPrecision);
+        quotient = parseFloat(quotient);
 
-                factor = wholePart + decimalPart;
-            } else {
-                // Only decimals (e.g., 0.1234)
-                factor = Math.random();
-            }
-            
-            // Ensure it is displayed with the appropriate precision
-            return parseFloat(factor.toFixed(numDecimals));
-        }
+        // 2. Generate the Divisor (between 0.1 and 5.0, with 1 to 3 decimals)
+        const divisorWhole = Math.floor(Math.random() * 5);
+        const divisorPrecision = Math.floor(Math.random() * 3) + 1;
+        divisor = (divisorWhole + Math.random()).toFixed(divisorPrecision);
+        divisor = parseFloat(divisor);
+        if (divisor < 0.001) divisor = 0.001;
 
-        /** Generates a Multiplication problem (factor1 x factor2). */
-        function generateMultiplicationProblem() {
-            // Maximum 4 total digits per factor (e.g., 12.34 or 123.4)
-            const factor1 = generateDecimalFactor(4); 
-            const factor2 = generateDecimalFactor(4);
-            
-            const product = factor1 * factor2;
-            
-            // The answer is stored with high precision for comparison.
-            const answer = parseFloat(product.toFixed(8)); 
-            
-            return { 
-                op1: factor1, 
-                op2: factor2, 
-                answer: answer,
-                type: 'Multiplication'
-            };
-        }
+        // 3. Calculate the Dividend to ensure zero remainder: Dividend = Quotient * Divisor
+        dividend = quotient * divisor;
 
-        /** Generates a Division problem (dividend / divisor) with an exact zero remainder. */
-        function generateDivisionProblem() {
-            let divisor, dividend, quotient;
-            
-            // 1. Generate the Quotient (Exact answer, max 4 decimals)
-            const quotientWhole = Math.floor(Math.random() * 990) + 10; 
-            const quotientPrecision = Math.floor(Math.random() * MAX_QUOTIENT_DECIMALS) + 1; 
-            
-            quotient = (quotientWhole + Math.random()).toFixed(quotientPrecision);
-            quotient = parseFloat(quotient);
+        const dividendDisplayPrecision = 8;
+        dividend = parseFloat(dividend.toFixed(dividendDisplayPrecision));
 
-            // 2. Generate the Divisor (between 0.1 and 5.0, with 1 to 3 decimals)
-            const divisorWhole = Math.floor(Math.random() * 5); 
-            const divisorPrecision = Math.floor(Math.random() * 3) + 1; 
-            divisor = (divisorWhole + Math.random()).toFixed(divisorPrecision);
-            divisor = parseFloat(divisor);
-            if (divisor < 0.001) divisor = 0.001;
+        return {
+          op1: divisor, // Divisor
+          op2: dividend, // Dividend
+          answer: quotient, // Quotient (exact answer)
+          type: "Division",
+        };
+      }
 
-            // 3. Calculate the Dividend to ensure zero remainder: Dividend = Quotient * Divisor
-            dividend = quotient * divisor;
+      // --- Rendering and Control Functions ---
 
-            const dividendDisplayPrecision = 8;
-            dividend = parseFloat(dividend.toFixed(dividendDisplayPrecision));
-            
-            return { 
-                op1: divisor, // Divisor
-                op2: dividend, // Dividend
-                answer: quotient, // Quotient (exact answer)
-                type: 'Division'
-            }; 
-        }
+      /** Renders the problem on the screen. */
+      function renderProblem(op1, op2, type) {
+        const problemDisplay = document.getElementById("problemDisplay");
+        const problemTitle = document.getElementById("problemTitle");
+        const problemDescription =
+          document.getElementById("problemDescription");
+        const inputHint = document.getElementById("inputHint");
 
-        // --- Rendering and Control Functions ---
-
-        /** Renders the problem on the screen. */
-        function renderProblem(op1, op2, type) {
-            const problemDisplay = document.getElementById('problemDisplay');
-            const problemTitle = document.getElementById('problemTitle');
-            const problemDescription = document.getElementById('problemDescription');
-            const inputHint = document.getElementById('inputHint');
-
-            if (type === 'Division') {
-                // Box format for division
-                problemDisplay.innerHTML = `
+        if (type === "Division") {
+          // Box format for division
+          problemDisplay.innerHTML = `
                     <span class="divisor">${op1.toString()}</span> 
                     <span class="dividend">${op2.toString()}</span>
                 `;
-                problemTitle.textContent = 'Decimal Division Practice';
-                problemDescription.textContent = 'Solve the presented division. The result (quotient) will have a zero remainder within a maximum of 4 decimal places.';
-                inputHint.textContent = 'The Quotient (Answer) goes above the line, but you enter it below.';
-                
-            } else if (type === 'Multiplication') {
-                // Simple format for multiplication (Adjusted to text-4xl to be larger)
-                problemDisplay.innerHTML = `
+          problemTitle.textContent = "Decimal Division Practice";
+          problemDescription.textContent =
+            "Solve the presented division. The result (quotient) will have a zero remainder within a maximum of 4 decimal places.";
+          inputHint.textContent =
+            "The Quotient (Answer) goes above the line, but you enter it below.";
+        } else if (type === "Multiplication") {
+          // Simple format for multiplication (Adjusted to text-4xl to be larger)
+          problemDisplay.innerHTML = `
                     <span class="op1 text-4xl">${op1.toString()}</span> 
                     <span class="text-orange-500 mx-4 text-4xl">x</span>
                     <span class="op2 text-4xl">${op2.toString()}</span>
                 `;
-                problemTitle.textContent = 'Decimal Multiplication Practice';
-                problemDescription.textContent = 'Multiply the presented factors. Enter the product, including all decimals.';
-                inputHint.textContent = 'Enter the product of the operation.';
-            }
-            
-            // Reset input placeholder
-            document.getElementById('inputAnswer').placeholder = type === 'Division' ? 'Ex: 12.3456' : 'Ex: 123.4567';
+          problemTitle.textContent = "Decimal Multiplication Practice";
+          problemDescription.textContent =
+            "Multiply the presented factors. Enter the product, including all decimals.";
+          inputHint.textContent = "Enter the product of the operation.";
         }
 
-        /** Renders the next problem in the sequence. */
-        function nextProblem() {
-            if (state.currentProblemIndex >= TOTAL_PROBLEMS) {
-                // End of exercise
-                document.getElementById('problemDisplay').innerHTML = `
+        // Reset input placeholder
+        document.getElementById("inputAnswer").placeholder =
+          type === "Division" ? "Ex: 12.3456" : "Ex: 123.4567";
+      }
+
+      /** Renders the next problem in the sequence. */
+      function nextProblem() {
+        if (state.currentProblemIndex >= TOTAL_PROBLEMS) {
+          // End of exercise
+          document.getElementById("problemDisplay").innerHTML = `
                     <p class="text-3xl font-extrabold text-green-700">Exercise Complete!</p>
                     <p class="text-xl text-gray-700 mt-2">Final Score: ${state.correctlySolved} of ${TOTAL_PROBLEMS}</p>
                 `;
-                document.getElementById('checkButton').disabled = true;
-                document.getElementById('inputAnswer').disabled = true;
-                return;
-            }
-
-            // Reset state for the new problem
-            state.attemptCounters = 0;
-            
-            // Clear inputs and feedback
-            document.getElementById('inputAnswer').value = '';
-            document.getElementById('checkButton').disabled = false;
-            document.getElementById('inputAnswer').disabled = false;
-            document.getElementById('feedbackArea').classList.add('hidden');
-
-            // Determine the type of problem to generate
-            let problem;
-            const problemIndex = state.currentProblemIndex;
-
-            if (problemIndex < NUM_MULTIPLICATION) { // 0 to 4 (Multiplication)
-                problem = generateMultiplicationProblem();
-            } else { // 5 to 19 (Division)
-                // Generate and validate the division problem (we keep the quotient > 1 validation logic)
-                let attempts = 0;
-                const MAX_GENERATION_ATTEMPTS = 100;
-                do {
-                    problem = generateDivisionProblem();
-                    attempts++;
-                } while (problem.answer < 1 || attempts > MAX_GENERATION_ATTEMPTS); 
-                
-                if (attempts > MAX_GENERATION_ATTEMPTS) {
-                    console.warn("A simple division problem was generated for safety.");
-                    problem = { op1: 0.25, op2: 100.5, answer: 402, type: 'Division' }; 
-                }
-            }
-            
-            // Store and render the validated problem
-            state.currentProblem = { 
-                op1: problem.op1, 
-                op2: problem.op2, 
-                answer: problem.answer,
-                type: problem.type 
-            };
-            
-            renderProblem(state.currentProblem.op1, state.currentProblem.op2, state.currentProblem.type);
-
-            // Update display
-            document.getElementById('currentProblemDisplay').textContent = state.currentProblemIndex + 1;
-            updateProgress();
+          document.getElementById("checkButton").disabled = true;
+          document.getElementById("inputAnswer").disabled = true;
+          return;
         }
 
-        /** Updates the progress bar and score. */
-        function updateProgress() {
-            const progress = (state.currentProblemIndex / TOTAL_PROBLEMS) * 100;
-            document.getElementById('progressBar').style.width = `${progress}%`;
-            document.getElementById('scoreDisplay').textContent = `Score: ${state.correctlySolved}/${state.currentProblemIndex}`;
+        // Reset state for the new problem
+        state.attemptCounters = 0;
+
+        // Clear inputs and feedback
+        document.getElementById("inputAnswer").value = "";
+        document.getElementById("checkButton").disabled = false;
+        document.getElementById("inputAnswer").disabled = false;
+        document.getElementById("feedbackArea").classList.add("hidden");
+
+        // Determine the type of problem to generate
+        let problem;
+        const problemIndex = state.currentProblemIndex;
+
+        if (problemIndex < NUM_MULTIPLICATION) {
+          // 0 to 4 (Multiplication)
+          problem = generateMultiplicationProblem();
+        } else {
+          // 5 to 19 (Division)
+          // Generate and validate the division problem (we keep the quotient > 1 validation logic)
+          let attempts = 0;
+          const MAX_GENERATION_ATTEMPTS = 100;
+          do {
+            problem = generateDivisionProblem();
+            attempts++;
+          } while (problem.answer < 1 || attempts > MAX_GENERATION_ATTEMPTS);
+
+          if (attempts > MAX_GENERATION_ATTEMPTS) {
+            console.warn("A simple division problem was generated for safety.");
+            problem = { op1: 0.25, op2: 100.5, answer: 402, type: "Division" };
+          }
         }
 
-        // --- Interaction Functions ---
+        // Store and render the validated problem
+        state.currentProblem = {
+          op1: problem.op1,
+          op2: problem.op2,
+          answer: problem.answer,
+          type: problem.type,
+        };
 
-        /** Handles the submission of the user's answer. */
-        function checkAnswer() {
-            const inputAnswerElement = document.getElementById('inputAnswer');
-            const feedbackArea = document.getElementById('feedbackArea');
-            const checkButton = document.getElementById('checkButton');
+        renderProblem(
+          state.currentProblem.op1,
+          state.currentProblem.op2,
+          state.currentProblem.type
+        );
 
-            const userAnswerString = inputAnswerElement.value.trim();
-            const userAnswer = parseFloat(userAnswerString);
-            
-            // 1. Input Validation
-            if (isNaN(userAnswer)) {
-                feedbackArea.textContent = 'Please enter a valid number.';
-                feedbackArea.className = 'mt-6 p-4 rounded-xl feedback-input incorrect';
-                feedbackArea.classList.remove('hidden');
-                return;
-            }
-            
-            // 2. Comparison using Tolerance (Epsilon)
-            const correct = state.currentProblem.answer; // Exact value (product or quotient)
-            const isDivision = state.currentProblem.type === 'Division';
+        // Update display
+        document.getElementById("currentProblemDisplay").textContent =
+          state.currentProblemIndex + 1;
+        updateProgress();
+      }
 
-            // Check if the user's input is mathematically close to the correct value
-            const isCorrect = Math.abs(userAnswer - correct) < EPSILON;
+      /** Updates the progress bar and score. */
+      function updateProgress() {
+        const progress = (state.currentProblemIndex / TOTAL_PROBLEMS) * 100;
+        document.getElementById("progressBar").style.width = `${progress}%`;
+        document.getElementById(
+          "scoreDisplay"
+        ).textContent = `Score: ${state.correctlySolved}/${state.currentProblemIndex}`;
+      }
 
-            if (isCorrect) {
-                // CORRECT ANSWER
-                state.correctlySolved++;
-                state.currentProblemIndex++; // Advance to the next problem
-                
-                const successMessage = isDivision 
-                    ? 'Correct! The division is exact! Moving to the next problem in 2 seconds... ✅'
-                    : 'Correct! The product is right! Moving to the next problem in 2 seconds... ✅';
+      // --- Interaction Functions ---
 
-                feedbackArea.innerHTML = `<strong>${successMessage}</strong>`;
-                feedbackArea.className = 'mt-6 p-4 rounded-xl feedback-input correct';
-                feedbackArea.classList.remove('hidden');
-                
-                // Block input and wait for transition
-                inputAnswerElement.disabled = true;
-                checkButton.disabled = true;
+      /** Handles the submission of the user's answer. */
+      function checkAnswer() {
+        const inputAnswerElement = document.getElementById("inputAnswer");
+        const feedbackArea = document.getElementById("feedbackArea");
+        const checkButton = document.getElementById("checkButton");
 
-                setTimeout(nextProblem, 2000);
+        const userAnswerString = inputAnswerElement.value.trim();
+        const userAnswer = parseFloat(userAnswerString);
 
-            } else {
-                // MATHEMATICALLY INCORRECT VALUE
-                state.attemptCounters++;
-                const attemptsLeft = MAX_ATTEMPTS - state.attemptCounters;
-                
-                if (attemptsLeft > 0) {
-                    // INCORRECT - Attempts Remaining
-                    const instruction = isDivision 
-                        ? 'Are you calculating until the zero remainder?' 
-                        : 'Review the multiplication and the decimal point position.';
-                    
-                    feedbackArea.innerHTML = `<strong>Incorrect.</strong> Please try again. ${instruction} Attempts remaining: ${attemptsLeft}. ❌`;
-                    feedbackArea.className = 'mt-6 p-4 rounded-xl feedback-input incorrect';
-                } else {
-                    // MAXIMUM ATTEMPTS REACHED - Reveal Answer
-                    state.currentProblemIndex++; // Advance to the next problem
-                    
-                    // Show the formatted answer 
-                    const displayAnswer = correct.toPrecision(8).replace(/\.?0+$/, ""); 
+        // 1. Input Validation
+        if (isNaN(userAnswer)) {
+          feedbackArea.textContent = "Please enter a valid number.";
+          feedbackArea.className =
+            "mt-6 p-4 rounded-xl feedback-input incorrect";
+          feedbackArea.classList.remove("hidden");
+          return;
+        }
 
-                    const operationType = isDivision ? 'Division' : 'Multiplication';
-                    const instruction = isDivision ? 'exact' : 'correct';
+        // 2. Comparison using Tolerance (Epsilon)
+        const correct = state.currentProblem.answer; // Exact value (product or quotient)
+        const isDivision = state.currentProblem.type === "Division";
 
-                    feedbackArea.innerHTML = `
+        // Check if the user's input is mathematically close to the correct value
+        const isCorrect = Math.abs(userAnswer - correct) < EPSILON;
+
+        if (isCorrect) {
+          // CORRECT ANSWER
+          state.correctlySolved++;
+          state.currentProblemIndex++; // Advance to the next problem
+
+          const successMessage = isDivision
+            ? "Correct! The division is exact! Moving to the next problem in 2 seconds... ✅"
+            : "Correct! The product is right! Moving to the next problem in 2 seconds... ✅";
+
+          feedbackArea.innerHTML = `<strong>${successMessage}</strong>`;
+          feedbackArea.className = "mt-6 p-4 rounded-xl feedback-input correct";
+          feedbackArea.classList.remove("hidden");
+
+          // Block input and wait for transition
+          inputAnswerElement.disabled = true;
+          checkButton.disabled = true;
+
+          setTimeout(nextProblem, 2000);
+        } else {
+          // MATHEMATICALLY INCORRECT VALUE
+          state.attemptCounters++;
+          const attemptsLeft = MAX_ATTEMPTS - state.attemptCounters;
+
+          if (attemptsLeft > 0) {
+            // INCORRECT - Attempts Remaining
+            const instruction = isDivision
+              ? "Are you calculating until the zero remainder?"
+              : "Review the multiplication and the decimal point position.";
+
+            feedbackArea.innerHTML = `<strong>Incorrect.</strong> Please try again. ${instruction} Attempts remaining: ${attemptsLeft}. ❌`;
+            feedbackArea.className =
+              "mt-6 p-4 rounded-xl feedback-input incorrect";
+          } else {
+            // MAXIMUM ATTEMPTS REACHED - Reveal Answer
+            state.currentProblemIndex++; // Advance to the next problem
+
+            // Show the formatted answer
+            const displayAnswer = correct.toPrecision(8).replace(/\.?0+$/, "");
+
+            const operationType = isDivision ? "Division" : "Multiplication";
+            const instruction = isDivision ? "exact" : "correct";
+
+            feedbackArea.innerHTML = `
                         <strong>Maximum attempts reached.</strong> The ${instruction} answer for the ${operationType} is: 
                         <span class="text-2xl font-extrabold text-orange-700">${displayAnswer}</span>.
                         Moving to the next problem in 5 seconds... 😥
                     `;
-                    feedbackArea.className = 'mt-6 p-4 rounded-xl feedback-input failed';
+            feedbackArea.className =
+              "mt-6 p-4 rounded-xl feedback-input failed";
 
-                    // Block input and wait for transition
-                    inputAnswerElement.disabled = true;
-                    checkButton.disabled = true;
-                    
-                    setTimeout(nextProblem, 5000);
-                }
-                feedbackArea.classList.remove('hidden');
-            }
+            // Block input and wait for transition
+            inputAnswerElement.disabled = true;
+            checkButton.disabled = true;
+
+            setTimeout(nextProblem, 5000);
+          }
+          feedbackArea.classList.remove("hidden");
         }
+      }
 
-        // --- Initialization ---
+      // --- Initialization ---
 
-        window.onload = function() {
-            // Start the first problem
-            nextProblem();
-        };
-
+      window.onload = function () {
+        // Start the first problem
+        nextProblem();
+      };
     </script>
-</body>
+  </body>
 </html>

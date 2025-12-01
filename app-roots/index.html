@@ -1,157 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Roots and Powers Exercise</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom styles for aesthetics and feedback */
+      /* Custom styles for aesthetics and feedback */
+      .problem-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      @media (min-width: 768px) {
         .problem-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
+          grid-template-columns: 1fr 1fr;
         }
-        @media (min-width: 768px) {
-            .problem-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        .correct {
-            border-left: 4px solid #10b981; /* Green 500 */
-        }
-        .incorrect {
-            border-left: 4px solid #ef4444; /* Red 500 */
-        }
-        .failed {
-            border-left: 4px solid #f97316; /* Orange 500 */
-        }
+      }
+      .correct {
+        border-left: 4px solid #10b981; /* Green 500 */
+      }
+      .incorrect {
+        border-left: 4px solid #ef4444; /* Red 500 */
+      }
+      .failed {
+        border-left: 4px solid #f97316; /* Orange 500 */
+      }
     </style>
-</head>
-<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4 font-sans">
+  </head>
+  <body
+    class="bg-gray-50 min-h-screen flex items-center justify-center p-4 font-sans"
+  >
+    <!-- Back to Home Button -->
+    <a
+      href="../index.html"
+      class="btn-back-home"
+      style="
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: white;
+        color: #7b68ee;
+        border: 3px solid #7b68ee;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 16px rgba(123, 104, 238, 0.2);
+        transition: all 0.3s ease;
+        z-index: 1000;
+      "
+    >
+      ← Menú Principal
+    </a>
 
-    <div class="w-full max-w-4xl bg-white shadow-2xl rounded-2xl p-6 md:p-10 border border-blue-200">
-        <h1 class="text-3xl font-extrabold text-blue-800 mb-2 text-center">
-            Roots and Powers Exercise
-        </h1>
-        <p class="text-gray-500 mb-6 text-center text-lg">
-            Write the value of each radical expression and use the button to check your answer.
-        </p>
+    <div
+      class="w-full max-w-4xl bg-white shadow-2xl rounded-2xl p-6 md:p-10 border border-blue-200"
+    >
+      <h1 class="text-3xl font-extrabold text-blue-800 mb-2 text-center">
+        Roots and Powers Exercise
+      </h1>
+      <p class="text-gray-500 mb-6 text-center text-lg">
+        Write the value of each radical expression and use the button to check
+        your answer.
+      </p>
 
-        <!-- Exercise Container -->
-        <div id="exerciseContainer" class="problem-grid">
-            <!-- Problems will be inserted here by JavaScript -->
-        </div>
+      <!-- Exercise Container -->
+      <div id="exerciseContainer" class="problem-grid">
+        <!-- Problems will be inserted here by JavaScript -->
+      </div>
 
-        <!-- Controls -->
-        <div class="flex justify-center mt-8">
-            <button
-                onclick="loadExercise()"
-                id="newExerciseButton"
-                class="bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-3 px-8 rounded-xl transition duration-150 ease-in-out transform hover:scale-[1.01] shadow-xl shadow-blue-300 uppercase tracking-wider"
-            >
-                Load Exercise
-            </button>
-        </div>
-        
+      <!-- Controls -->
+      <div class="flex justify-center mt-8">
+        <button
+          onclick="loadExercise()"
+          id="newExerciseButton"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-extrabold py-3 px-8 rounded-xl transition duration-150 ease-in-out transform hover:scale-[1.01] shadow-xl shadow-blue-300 uppercase tracking-wider"
+        >
+          Load Exercise
+        </button>
+      </div>
     </div>
 
     <script>
-        // --- Problem Definition and Correct Answers ---
-        // Note: Problems 'e' and 'j' have been adjusted to positive numbers (32 and 243) 
-        // to comply with the requirement of "positive numbers only".
-        const problemsData = [
-            { id: 'a', expression: '√144', correct: 12, label: 'a' },
-            { id: 'b', expression: '³√343', correct: 7, label: 'b' },
-            { id: 'c', expression: '⁴√16', correct: 2, label: 'c' },
-            { id: 'd', expression: '⁴√625', correct: 5, label: 'd' },
-            { id: 'e', expression: '⁵√32', correct: 2, label: 'e' }, 
-            { id: 'f', expression: '⁵√100 000', correct: 10, label: 'f' },
-            { id: 'g', expression: '⁴√6561', correct: 9, label: 'g' },
-            { id: 'h', expression: '⁶√64', correct: 2, label: 'h' },
-            { id: 'i', expression: '¹⁰√1024', correct: 2, label: 'i' },
-            { id: 'j', expression: '⁵√243', correct: 3, label: 'j' } 
-        ];
+      // --- Problem Definition and Correct Answers ---
+      // Note: Problems 'e' and 'j' have been adjusted to positive numbers (32 and 243)
+      // to comply with the requirement of "positive numbers only".
+      const problemsData = [
+        { id: "a", expression: "√144", correct: 12, label: "a" },
+        { id: "b", expression: "³√343", correct: 7, label: "b" },
+        { id: "c", expression: "⁴√16", correct: 2, label: "c" },
+        { id: "d", expression: "⁴√625", correct: 5, label: "d" },
+        { id: "e", expression: "⁵√32", correct: 2, label: "e" },
+        { id: "f", expression: "⁵√100 000", correct: 10, label: "f" },
+        { id: "g", expression: "⁴√6561", correct: 9, label: "g" },
+        { id: "h", expression: "⁶√64", correct: 2, label: "h" },
+        { id: "i", expression: "¹⁰√1024", correct: 2, label: "i" },
+        { id: "j", expression: "⁵√243", correct: 3, label: "j" },
+      ];
 
-        const exerciseContainer = document.getElementById('exerciseContainer');
-        // Object to track failed attempts for each problem: { 'a': 0, 'b': 0, ... }
-        let attemptCounters = {}; 
-        const MAX_ATTEMPTS = 3;
+      const exerciseContainer = document.getElementById("exerciseContainer");
+      // Object to track failed attempts for each problem: { 'a': 0, 'b': 0, ... }
+      let attemptCounters = {};
+      const MAX_ATTEMPTS = 3;
 
-        /**
-         * Checks the student's answer for a specific problem.
-         * @param {string} problemId - The ID of the problem (e.g., 'a', 'b').
-         * @param {number} correctAnswer - The expected correct answer.
-         */
-        function checkAnswer(problemId, correctAnswer) {
-            const inputElement = document.getElementById(`input-${problemId}`);
-            const feedbackElement = document.getElementById(`feedback-${problemId}`);
-            const checkButton = document.getElementById(`check-btn-${problemId}`);
-            
-            // Check if the input is disabled (already solved or max attempts reached)
-            if (inputElement.disabled) {
-                return;
-            }
+      /**
+       * Checks the student's answer for a specific problem.
+       * @param {string} problemId - The ID of the problem (e.g., 'a', 'b').
+       * @param {number} correctAnswer - The expected correct answer.
+       */
+      function checkAnswer(problemId, correctAnswer) {
+        const inputElement = document.getElementById(`input-${problemId}`);
+        const feedbackElement = document.getElementById(
+          `feedback-${problemId}`
+        );
+        const checkButton = document.getElementById(`check-btn-${problemId}`);
 
-            const userAnswer = parseInt(inputElement.value.trim(), 10);
-            
-            // Clear the previous feedback class and prepare the element.
-            feedbackElement.classList.remove('correct', 'incorrect', 'failed', 'hidden');
-
-            if (isNaN(userAnswer) || inputElement.value.trim() === '') {
-                feedbackElement.innerHTML = 'Please enter a number.';
-                feedbackElement.classList.add('incorrect');
-                return;
-            }
-            
-            if (userAnswer === correctAnswer) {
-                // Correct Answer
-                feedbackElement.innerHTML = 'Correct! ✅';
-                feedbackElement.classList.add('correct');
-                inputElement.disabled = true; // Disable input if correct
-                checkButton.disabled = true; // Disable button
-            } else {
-                // Incorrect Answer
-                
-                // Increment the counter for this problem
-                attemptCounters[problemId] = (attemptCounters[problemId] || 0) + 1;
-                
-                const attemptsLeft = MAX_ATTEMPTS - attemptCounters[problemId];
-
-                if (attemptsLeft > 0) {
-                    // Try again
-                    feedbackElement.innerHTML = `Incorrect. Attempts remaining: ${attemptsLeft} ❌`;
-                    feedbackElement.classList.add('incorrect');
-                } else {
-                    // Max attempts reached: reveal the answer
-                    feedbackElement.innerHTML = `Max attempts reached. The correct answer is ${correctAnswer}.`;
-                    feedbackElement.classList.add('failed');
-                    inputElement.disabled = true; // Disable input
-                    checkButton.disabled = true; // Disable button
-                }
-            }
-            
-            // Show the feedback element
-            feedbackElement.classList.remove('hidden');
+        // Check if the input is disabled (already solved or max attempts reached)
+        if (inputElement.disabled) {
+          return;
         }
 
-        /**
-         * Loads and renders all problems in the container.
-         */
-        function loadExercise() {
-            exerciseContainer.innerHTML = ''; // Clear the container
-            attemptCounters = {}; // Reset all attempt counters
-            
-            problemsData.forEach(problem => {
-                // Initialize counter for this problem
-                attemptCounters[problem.id] = 0; 
-                
-                const problemDiv = document.createElement('div');
-                problemDiv.className = 'bg-white p-4 rounded-xl shadow border border-gray-100';
-                
-                // Build HTML for each problem
-                problemDiv.innerHTML = `
+        const userAnswer = parseInt(inputElement.value.trim(), 10);
+
+        // Clear the previous feedback class and prepare the element.
+        feedbackElement.classList.remove(
+          "correct",
+          "incorrect",
+          "failed",
+          "hidden"
+        );
+
+        if (isNaN(userAnswer) || inputElement.value.trim() === "") {
+          feedbackElement.innerHTML = "Please enter a number.";
+          feedbackElement.classList.add("incorrect");
+          return;
+        }
+
+        if (userAnswer === correctAnswer) {
+          // Correct Answer
+          feedbackElement.innerHTML = "Correct! ✅";
+          feedbackElement.classList.add("correct");
+          inputElement.disabled = true; // Disable input if correct
+          checkButton.disabled = true; // Disable button
+        } else {
+          // Incorrect Answer
+
+          // Increment the counter for this problem
+          attemptCounters[problemId] = (attemptCounters[problemId] || 0) + 1;
+
+          const attemptsLeft = MAX_ATTEMPTS - attemptCounters[problemId];
+
+          if (attemptsLeft > 0) {
+            // Try again
+            feedbackElement.innerHTML = `Incorrect. Attempts remaining: ${attemptsLeft} ❌`;
+            feedbackElement.classList.add("incorrect");
+          } else {
+            // Max attempts reached: reveal the answer
+            feedbackElement.innerHTML = `Max attempts reached. The correct answer is ${correctAnswer}.`;
+            feedbackElement.classList.add("failed");
+            inputElement.disabled = true; // Disable input
+            checkButton.disabled = true; // Disable button
+          }
+        }
+
+        // Show the feedback element
+        feedbackElement.classList.remove("hidden");
+      }
+
+      /**
+       * Loads and renders all problems in the container.
+       */
+      function loadExercise() {
+        exerciseContainer.innerHTML = ""; // Clear the container
+        attemptCounters = {}; // Reset all attempt counters
+
+        problemsData.forEach((problem) => {
+          // Initialize counter for this problem
+          attemptCounters[problem.id] = 0;
+
+          const problemDiv = document.createElement("div");
+          problemDiv.className =
+            "bg-white p-4 rounded-xl shadow border border-gray-100";
+
+          // Build HTML for each problem
+          problemDiv.innerHTML = `
                     <div class="flex items-center space-x-4 mb-3">
                         <span class="text-xl font-bold text-gray-700">${problem.label}.</span>
                         <span class="text-3xl font-extrabold text-blue-700">${problem.expression}</span>
@@ -178,17 +215,17 @@
                         <!-- Feedback will be inserted here -->
                     </div>
                 `;
-                
-                exerciseContainer.appendChild(problemDiv);
-            });
-            
-            // Change the control button text
-            document.getElementById('newExerciseButton').textContent = 'New Exercise';
-        }
 
-        // --- Initialization ---
-        window.onload = loadExercise;
+          exerciseContainer.appendChild(problemDiv);
+        });
 
+        // Change the control button text
+        document.getElementById("newExerciseButton").textContent =
+          "New Exercise";
+      }
+
+      // --- Initialization ---
+      window.onload = loadExercise;
     </script>
-</body>
+  </body>
 </html>
