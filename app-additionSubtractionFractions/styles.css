@@ -1,0 +1,99 @@
+/* Additional styles specific to fractions challenge */
+.fraction-display {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.fraction-bar {
+  border-bottom: 3px solid currentColor;
+  width: 100%;
+  margin: 0.25rem 0;
+}
+.numerator,
+.denominator {
+  padding: 0 0.5rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.operator-display {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  font-weight: 700;
+  padding: 0 1rem;
+  color: var(--color-math-blue);
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.input-field {
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+  width: 120px;
+  text-align: center;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--color-math-blue);
+  box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.1);
+}
+
+.feedback-item {
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  border-left: 5px solid;
+  font-family: var(--font-body);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.feedback-correct {
+  background: var(--bg-light-green);
+  border-color: var(--color-math-green);
+  color: #1b5e20;
+}
+
+.feedback-incorrect {
+  background: #ffebee;
+  border-color: var(--color-math-pink);
+  color: #b71c1c;
+}
+
+.feedback-failed {
+  background: var(--bg-light-orange);
+  border-color: var(--color-math-orange);
+  color: #e65100;
+}
+
+.progress-info {
+  font-family: var(--font-handwriting);
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}

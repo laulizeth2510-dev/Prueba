@@ -1,0 +1,260 @@
+// --- Variables de Estado del Quiz ---
+let currentNumber = 0;
+let checksData = []; // Almacena el resultado de getDivisibilityRules()
+let userAnswers = {}; // {2: null, 3: null, ...}
+const divisors = [2, 3, 5, 6, 7, 9, 10];
+
+// Referencias a elementos del DOM
+const randomNumberDisplay = document.getElementById('randomNumberDisplay');
+const quizOptionsContainer = document.getElementById('quizOptions');
+const feedbackListContainer = document.getElementById('feedbackListContainer');
+const finalScoreContainer = document.getElementById('finalScoreContainer');
+
+// Variables para el seguimiento del estado
+let answersCount = 0;
+let correctCount = 0;
+
+// --- Utilidades ---
+
+/**
+ * Calcula la suma de los dígitos de un número (valor absoluto).
+ */
+function getSumOfDigits(num) {
+  return String(Math.abs(num))
+    .split('')
+    .map(Number)
+    .reduce((sum, digit) => sum + digit, 0);
+}
+
+/**
+ * Genera las reglas de divisibilidad y las respuestas correctas.
+ */
+function getDivisibilityRules(num) {
+  const absNumber = Math.abs(num);
+  const sumOfDigits = getSumOfDigits(num);
+  const lastDigit = absNumber % 10;
+
+  return [
+    {
+      divisor: 2,
+      isMultiple: absNumber % 2 === 0,
+      rule: `The number ${absNumber} ends in ${lastDigit}. To be a multiple of 2, the last digit must be 0, 2, 4, 6, or 8.`,
+      icon: '🔢',
+    },
+    {
+      divisor: 3,
+      isMultiple: sumOfDigits % 3 === 0,
+      rule: `The sum of its digits is ${sumOfDigits}. To be a multiple of 3, the sum of its digits (${sumOfDigits}) must be divisible by 3.`,
+      icon: '➕',
+    },
+    {
+      divisor: 5,
+      isMultiple: lastDigit === 0 || lastDigit === 5,
+      rule: `The number ${absNumber} ends in ${lastDigit}. To be a multiple of 5, the last digit must be 0 or 5.`,
+      icon: '✋',
+    },
+    {
+      divisor: 6,
+      isMultiple: absNumber % 2 === 0 && sumOfDigits % 3 === 0,
+      rule: `It must be a multiple of 2 AND 3 at the same time. Check if the divisibility rules for 2 and 3 are satisfied.`,
+      icon: '🔄',
+    },
+    {
+      divisor: 7,
+      isMultiple: absNumber % 7 === 0,
+      rule: `The easiest way is to divide ${absNumber} by 7. Rule: Subtract double the last digit from the remaining number; the result must be divisible by 7.`,
+      icon: '⭐',
+    },
+    {
+      divisor: 9,
+      isMultiple: sumOfDigits % 9 === 0,
+      rule: `The sum of its digits is ${sumOfDigits}. To be a multiple of 9, the sum of its digits (${sumOfDigits}) must be divisible by 9.`,
+      icon: '✨',
+    },
+    {
+      divisor: 10,
+      isMultiple: lastDigit === 0,
+      rule: `The number ${absNumber} ends in ${lastDigit}. To be a multiple of 10, the last digit must be 0.`,
+      icon: '🔟',
+    },
+  ];
+}
+
+// --- Lógica del Quiz ---
+
+/**
+ * Renderiza la tarjeta de feedback individual para un divisor.
+ * @param {number} divisor - El divisor comprobado.
+ */
+function renderIndividualFeedback(divisor) {
+  const check = checksData.find((c) => c.divisor === divisor);
+  const userAnswer = userAnswers[divisor];
+  const isCorrect = userAnswer === check.isMultiple;
+
+  if (isCorrect) correctCount++;
+  answersCount++;
+
+  const colorClass = isCorrect ? 'feedback-correct' : 'feedback-incorrect';
+  const resultText = isCorrect ? 'Correct!' : 'Incorrect!';
+  const feedbackIcon = isCorrect ? '✅' : '❌';
+  const correctLabel = check.isMultiple
+    ? 'YES is a multiple'
+    : 'NO is not a multiple';
+
+  const feedbackItem = document.createElement('div');
+  feedbackItem.className = `feedback-item ${colorClass}`;
+  feedbackItem.id = `feedback-${divisor}`;
+  feedbackItem.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                <h3 style="font-family: var(--font-heading); font-size: 1.5rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+                    ${feedbackIcon} Multiple of ${divisor}
+                </h3>
+                <span style="font-family: var(--font-body); font-weight: 700; font-size: 1.1rem; padding: 0.5rem 1rem; border-radius: 20px; ${
+                  isCorrect
+                    ? 'background: var(--color-math-green); color: white;'
+                    : 'background: var(--color-math-pink); color: white;'
+                }">
+                    ${resultText}
+                </span>
+            </div>
+            <p style="font-family: var(--font-handwriting); font-size: 1.1rem; margin-top: 0.5rem;">
+                <span style="font-weight: 700;">Your Answer:</span> ${
+                  userAnswer ? 'YES' : 'NO'
+                }
+                <span style="margin-left: 1rem; font-weight: 700;">Correct Answer:</span> ${correctLabel}
+            </p>
+            <p style="font-family: var(--font-body); margin-top: 0.75rem; padding-top: 0.75rem; border-top: 2px dashed var(--border-color);">
+                <span style="font-weight: 600; color: var(--color-math-purple);">💡 Rule:</span> ${
+                  check.rule
+                }
+            </p>
+        `;
+  feedbackListContainer.appendChild(feedbackItem);
+
+  // Si todas las respuestas han sido dadas, mostrar el puntaje final
+  if (answersCount === divisors.length) {
+    displayFinalScore();
+  }
+}
+
+/**
+ * Muestra el resumen del puntaje final.
+ */
+function displayFinalScore() {
+  const totalChecks = divisors.length;
+  const percentage = ((correctCount / totalChecks) * 100).toFixed(0);
+  const scoreMessage = `Final Score: ${correctCount} out of ${totalChecks} (${percentage}%)`;
+
+  let emoji = '🎉';
+  if (percentage >= 90) emoji = '🌟';
+  else if (percentage >= 70) emoji = '🎉';
+  else if (percentage >= 50) emoji = '👍';
+  else emoji = '💪';
+
+  const scoreBox = document.createElement('div');
+  scoreBox.className = 'score-box';
+  scoreBox.innerHTML = `
+            <div style="font-size: 4rem; margin-bottom: 1rem;">${emoji}</div>
+            <h2 class="score-text">${scoreMessage}</h2>
+            <p class="handwriting" style="margin-top: 1rem; font-size: 1.2rem; color: var(--text-secondary);">
+                ${percentage >= 70 ? 'Great job!' : 'Keep practicing!'}
+            </p>
+        `;
+
+  finalScoreContainer.appendChild(scoreBox);
+}
+
+/**
+ * Selecciona la respuesta del usuario, da feedback individual e inicia la comprobación final si es necesario.
+ * @param {number} divisor - El divisor al que se aplica la respuesta.
+ * @param {boolean} answer - La respuesta del usuario (true = SÍ, false = NO).
+ * @param {HTMLElement} btnYes - Botón SÍ.
+ * @param {HTMLElement} btnNo - Botón NO.
+ */
+function selectAnswer(divisor, answer, btnYes, btnNo) {
+  // Si ya tiene una respuesta registrada (y los botones están deshabilitados), no hacer nada
+  if (userAnswers[divisor] !== null) return;
+
+  userAnswers[divisor] = answer;
+
+  // Lógica de selección visual
+  if (answer === true) {
+    btnYes.classList.add('selected-yes');
+  } else {
+    btnNo.classList.add('selected-no');
+  }
+
+  // Deshabilitar botones para este criterio una vez respondido
+  btnYes.disabled = true;
+  btnNo.disabled = true;
+
+  // Dar feedback inmediato
+  renderIndividualFeedback(divisor);
+}
+
+/**
+ * Genera un nuevo número aleatorio y resetea el quiz.
+ */
+function generateNewNumber() {
+  // Generar un número aleatorio entre 1 y 1000 (excluyendo el 0)
+  currentNumber = Math.floor(Math.random() * 999) + 1;
+
+  // Resetear estado y contadores
+  userAnswers = {};
+  answersCount = 0;
+  correctCount = 0;
+  feedbackListContainer.innerHTML = '';
+  finalScoreContainer.innerHTML = '';
+
+  // Actualizar la UI
+  randomNumberDisplay.textContent = currentNumber;
+
+  // Calcular y almacenar las reglas y respuestas correctas
+  checksData = getDivisibilityRules(currentNumber);
+  renderQuizOptions(checksData);
+}
+
+/**
+ * Renderiza los botones de SÍ/NO para cada divisor.
+ * @param {Array} checks - Lista de divisores y reglas.
+ */
+function renderQuizOptions(checks) {
+  quizOptionsContainer.innerHTML = '';
+
+  checks.forEach((check) => {
+    const divisor = check.divisor;
+
+    // Inicializar respuesta del usuario
+    userAnswers[divisor] = null;
+
+    const optionDiv = document.createElement('div');
+    optionDiv.className = 'quiz-item';
+
+    optionDiv.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <span class="quiz-label">
+                        ${check.icon} Is it a multiple of <span class="divisor-number">${divisor}</span>?
+                    </span>
+                    <div style="display: flex; gap: 0.75rem;">
+                        <button id="btnYes${divisor}" class="quiz-option" data-answer="true">YES</button>
+                        <button id="btnNo${divisor}" class="quiz-option" data-answer="false">NO</button>
+                    </div>
+                </div>
+            `;
+
+    quizOptionsContainer.appendChild(optionDiv);
+
+    // Asignar listeners después de adjuntar al DOM
+    const btnYes = document.getElementById(`btnYes${divisor}`);
+    const btnNo = document.getElementById(`btnNo${divisor}`);
+
+    // Usamos bind para pasar los parámetros correctos al selectAnswer
+    btnYes.onclick = selectAnswer.bind(null, divisor, true, btnYes, btnNo);
+    btnNo.onclick = selectAnswer.bind(null, divisor, false, btnYes, btnNo);
+  });
+}
+
+// --- Inicialización ---
+window.onload = () => {
+  generateNewNumber();
+};

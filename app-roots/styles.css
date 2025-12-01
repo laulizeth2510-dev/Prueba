@@ -1,0 +1,155 @@
+/* Additional styles specific to roots challenge */
+.problem-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+@media (min-width: 768px) {
+  .problem-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.problem-card {
+  background: white;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 2px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.problem-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-math-purple);
+}
+
+.problem-label {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  color: var(--color-math-purple);
+  display: inline-block;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: linear-gradient(
+    135deg,
+    var(--bg-light-blue),
+    var(--bg-light-purple)
+  );
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.problem-expression {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-math-blue);
+  font-family: var(--font-handwriting);
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.input-field {
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--color-math-purple);
+  box-shadow: 0 0 0 3px rgba(123, 104, 238, 0.1);
+}
+
+.button-group {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+}
+
+.btn-check {
+  background: linear-gradient(135deg, var(--color-math-green), #27ae60);
+  color: white;
+  flex: 1;
+  min-width: 120px;
+}
+
+.btn-check:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-check:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.feedback-item {
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-left: 5px solid;
+  font-family: var(--font-body);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.feedback-correct {
+  background: var(--bg-light-green);
+  border-color: var(--color-math-green);
+  color: #1b5e20;
+}
+
+.feedback-incorrect {
+  background: #ffebee;
+  border-color: var(--color-math-pink);
+  color: #b71c1c;
+}
+
+.feedback-failed {
+  background: var(--bg-light-orange);
+  border-color: var(--color-math-orange);
+  color: #e65100;
+}
+
+.feedback-icon {
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+}
+
+.hidden {
+  display: none;
+}
