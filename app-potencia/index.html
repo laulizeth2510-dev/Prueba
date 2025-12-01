@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -120,7 +120,7 @@
   </head>
   <body>
     <!-- Back to Home Button -->
-    <a href="../index.html" class="btn-back-home"> Menú Principal </a>
+    <a href="../index.html" class="btn-back-home"> Home Menu </a>
 
     <!-- Decorative Doodles -->
     <div class="doodle doodle-1">⚡</div>
@@ -132,7 +132,7 @@
       <!-- Header -->
       <header class="header">
         <h1>POWERS & EXPONENTS</h1>
-        <p class="subtitle">¿Es este número múltiplo de...? ¡Descúbrelo!</p>
+        <p class="subtitle">Is this number a multiple of...? Discover it!</p>
       </header>
 
       <!-- Main Card -->
@@ -147,7 +147,7 @@
               margin-bottom: 0.5rem;
             "
           >
-            Número a Analizar
+            Number to Analyze
           </p>
           <div id="randomNumberDisplay" class="problem-number">...</div>
         </div>
@@ -173,7 +173,7 @@
             class="btn btn-primary"
             style="flex: 1"
           >
-            🎲 Nuevo Número
+            🎲 New Number
           </button>
         </div>
 
@@ -236,43 +236,43 @@
           {
             divisor: 2,
             isMultiple: absNumber % 2 === 0,
-            rule: `El número ${absNumber} termina en ${lastDigit}. Para ser múltiplo de 2, el último dígito debe ser 0, 2, 4, 6 u 8.`,
+            rule: `The number ${absNumber} ends in ${lastDigit}. To be a multiple of 2, the last digit must be 0, 2, 4, 6, or 8.`,
             icon: "🔢",
           },
           {
             divisor: 3,
             isMultiple: sumOfDigits % 3 === 0,
-            rule: `La suma de sus dígitos es ${sumOfDigits}. Para ser múltiplo de 3, la suma de sus dígitos (${sumOfDigits}) debe ser divisible por 3.`,
+            rule: `The sum of its digits is ${sumOfDigits}. To be a multiple of 3, the sum of its digits (${sumOfDigits}) must be divisible by 3.`,
             icon: "➕",
           },
           {
             divisor: 5,
             isMultiple: lastDigit === 0 || lastDigit === 5,
-            rule: `El número ${absNumber} termina en ${lastDigit}. Para ser múltiplo de 5, el último dígito debe ser 0 o 5.`,
+            rule: `The number ${absNumber} ends in ${lastDigit}. To be a multiple of 5, the last digit must be 0 or 5.`,
             icon: "✋",
           },
           {
             divisor: 6,
             isMultiple: absNumber % 2 === 0 && sumOfDigits % 3 === 0,
-            rule: `Debe ser múltiplo de 2 Y de 3 a la vez. Comprueba si se cumplen las reglas de divisibilidad para el 2 y el 3.`,
+            rule: `It must be a multiple of 2 AND 3 at the same time. Check if the divisibility rules for 2 and 3 are satisfied.`,
             icon: "🔄",
           },
           {
             divisor: 7,
             isMultiple: absNumber % 7 === 0,
-            rule: `La forma más sencilla es dividir ${absNumber} entre 7. Regla: Restar el doble del último dígito al número restante; el resultado debe ser divisible por 7.`,
+            rule: `The easiest way is to divide ${absNumber} by 7. Rule: Subtract double the last digit from the remaining number; the result must be divisible by 7.`,
             icon: "⭐",
           },
           {
             divisor: 9,
             isMultiple: sumOfDigits % 9 === 0,
-            rule: `La suma de sus dígitos es ${sumOfDigits}. Para ser múltiplo de 9, la suma de sus dígitos (${sumOfDigits}) debe ser divisible por 9.`,
+            rule: `The sum of its digits is ${sumOfDigits}. To be a multiple of 9, the sum of its digits (${sumOfDigits}) must be divisible by 9.`,
             icon: "✨",
           },
           {
             divisor: 10,
             isMultiple: lastDigit === 0,
-            rule: `El número ${absNumber} termina en ${lastDigit}. Para ser múltiplo de 10, el último dígito debe ser 0.`,
+            rule: `The number ${absNumber} ends in ${lastDigit}. To be a multiple of 10, the last digit must be 0.`,
             icon: "🔟",
           },
         ];
@@ -295,11 +295,11 @@
         const colorClass = isCorrect
           ? "feedback-correct"
           : "feedback-incorrect";
-        const resultText = isCorrect ? "¡Correcto!" : "¡Incorrecto!";
+        const resultText = isCorrect ? "Correct!" : "Incorrect!";
         const feedbackIcon = isCorrect ? "✅" : "❌";
         const correctLabel = check.isMultiple
-          ? "SÍ es múltiplo"
-          : "NO es múltiplo";
+          ? "YES is a multiple"
+          : "NO is not a multiple";
 
         const feedbackItem = document.createElement("div");
         feedbackItem.className = `feedback-item ${colorClass}`;
@@ -307,7 +307,7 @@
         feedbackItem.innerHTML = `
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
                 <h3 style="font-family: var(--font-heading); font-size: 1.5rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
-                    ${feedbackIcon} Múltiplo de ${divisor}
+                    ${feedbackIcon} Multiple of ${divisor}
                 </h3>
                 <span style="font-family: var(--font-body); font-weight: 700; font-size: 1.1rem; padding: 0.5rem 1rem; border-radius: 20px; ${
                   isCorrect
@@ -318,13 +318,13 @@
                 </span>
             </div>
             <p style="font-family: var(--font-handwriting); font-size: 1.1rem; margin-top: 0.5rem;">
-                <span style="font-weight: 700;">Tu Respuesta:</span> ${
-                  userAnswer ? "SÍ" : "NO"
+                <span style="font-weight: 700;">Your Answer:</span> ${
+                  userAnswer ? "YES" : "NO"
                 }
-                <span style="margin-left: 1rem; font-weight: 700;">Respuesta Correcta:</span> ${correctLabel}
+                <span style="margin-left: 1rem; font-weight: 700;">Correct Answer:</span> ${correctLabel}
             </p>
             <p style="font-family: var(--font-body); margin-top: 0.75rem; padding-top: 0.75rem; border-top: 2px dashed var(--border-color);">
-                <span style="font-weight: 600; color: var(--color-math-purple);">💡 Regla:</span> ${
+                <span style="font-weight: 600; color: var(--color-math-purple);">💡 Rule:</span> ${
                   check.rule
                 }
             </p>
@@ -343,7 +343,7 @@
       function displayFinalScore() {
         const totalChecks = divisors.length;
         const percentage = ((correctCount / totalChecks) * 100).toFixed(0);
-        const scoreMessage = `Puntaje Final: ${correctCount} de ${totalChecks} (${percentage}%)`;
+        const scoreMessage = `Final Score: ${correctCount} out of ${totalChecks} (${percentage}%)`;
 
         let emoji = "🎉";
         if (percentage >= 90) emoji = "🌟";
@@ -359,8 +359,8 @@
             <p class="handwriting" style="margin-top: 1rem; font-size: 1.2rem; color: var(--text-secondary);">
                 ${
                   percentage >= 70
-                    ? "¡Excelente trabajo!"
-                    : "¡Sigue practicando!"
+                    ? "Great job!"
+                    : "Keep practicing!"
                 }
             </p>
         `;
@@ -437,10 +437,10 @@
           optionDiv.innerHTML = `
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <span class="quiz-label">
-                        ${check.icon} ¿Múltiplo de <span class="divisor-number">${divisor}</span>?
+                        ${check.icon} Is it a multiple of <span class="divisor-number">${divisor}</span>?
                     </span>
                     <div style="display: flex; gap: 0.75rem;">
-                        <button id="btnYes${divisor}" class="quiz-option" data-answer="true">SÍ</button>
+                        <button id="btnYes${divisor}" class="quiz-option" data-answer="true">YES</button>
                         <button id="btnNo${divisor}" class="quiz-option" data-answer="false">NO</button>
                     </div>
                 </div>

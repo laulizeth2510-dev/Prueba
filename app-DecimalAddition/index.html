@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -53,7 +53,7 @@
 <body>
     <!-- Back to Home Button -->
     <a href="../index.html" class="btn-back-home">
-        Menú Principal
+        Home Menu
     </a>
 
     <!-- Decorative Doodles -->
@@ -66,7 +66,7 @@
       <!-- Header -->
       <header class="header">
         <h1>DECIMAL PRACTICE</h1>
-        <p class="subtitle">¡Suma y resta decimales como un experto!</p>
+        <p class="subtitle">Add and subtract decimals like an expert!</p>
       </header>
 
       <!-- Main Card -->
@@ -75,9 +75,9 @@
         <div class="progress-container">
           <div class="progress-info">
             <span
-              >Problema <span id="currentProblemDisplay">1</span> de 20</span
+              >Problem <span id="currentProblemDisplay">1</span> of 20</span
             >
-            <span id="scoreDisplay">Puntaje: 0/0</span>
+            <span id="scoreDisplay">Score: 0/0</span>
           </div>
           <div class="progress-bar">
             <div id="progressBar" class="progress-fill" style="width: 0%"></div>
@@ -101,7 +101,7 @@
               class="handwriting"
               style="color: var(--text-secondary); font-size: 1.2rem"
             >
-              Cargando problema...
+              Loading problem...
             </p>
           </div>
         </div>
@@ -121,14 +121,14 @@
             class="handwriting"
             style="font-size: 1.5rem; color: var(--text-primary)"
           >
-            Tu Respuesta:
+            Your Answer:
           </div>
 
           <input
             type="number"
             step="0.01"
             id="inputAnswer"
-            placeholder="ej. 12.34"
+            placeholder="e.g. 12.34"
             class="answer-input"
           />
 
@@ -138,7 +138,7 @@
             class="btn btn-success"
             style="width: 100%; max-width: 400px"
           >
-            ✓ Verificar Respuesta
+            ✓ Check Answer
           </button>
         </div>
 
@@ -373,7 +373,7 @@
         document.getElementById("progressBar").style.width = `${progress}%`;
         document.getElementById(
           "scoreDisplay"
-        ).textContent = `Puntaje: ${state.correctlySolved}/${state.currentProblemIndex}`;
+        ).textContent = `Score: ${state.correctlySolved}/${state.currentProblemIndex}`;
       }
 
       // --- Interaction Functions ---
@@ -389,7 +389,7 @@
 
         // 1. Input Validation
         if (isNaN(userAnswer)) {
-          feedbackArea.textContent = "Por favor ingresa un número válido.";
+          feedbackArea.textContent = "Please enter a valid number.";
           feedbackArea.className = "feedback feedback-incorrect";
           feedbackArea.classList.remove("hidden");
           return;
@@ -421,7 +421,7 @@
           state.currentProblemIndex++; // Move to next problem
 
           feedbackArea.innerHTML =
-            "<strong>¡Correcto! 🎉</strong> ¡Bien hecho! El redondeo a dos decimales es correcto. Pasando al siguiente problema en 2 segundos...";
+            "<strong>Correct! 🎉</strong> Well done! Rounding to two decimal places is correct. Moving to the next problem in 2 seconds...";
           feedbackArea.className = "feedback feedback-correct";
           feedbackArea.classList.remove("hidden");
 
@@ -437,9 +437,9 @@
 
           if (attemptsLeft > 0) {
             feedbackArea.innerHTML = `
-                        <strong>Incorrecto ❌</strong> El valor es casi correcto, pero recuerda: debes ingresar tu respuesta 
-                        <span style="font-weight: 700; color: var(--color-math-pink);">redondeada exactamente a ${FIXED_DISPLAY_PRECISION} cifras decimales</span>.
-                        Intentos restantes: ${attemptsLeft}.
+                        <strong>Incorrect ❌</strong> The value is almost correct, but remember: you must enter your answer 
+                        <span style="font-weight: 700; color: var(--color-math-pink);">rounded exactly to ${FIXED_DISPLAY_PRECISION} decimal places</span>.
+                        Attempts remaining: ${attemptsLeft}.
                     `;
             feedbackArea.className = "feedback feedback-incorrect";
           } else {
@@ -447,9 +447,9 @@
             state.currentProblemIndex++; // Move to next problem
 
             feedbackArea.innerHTML = `
-                        <strong>Máximo de intentos alcanzado.</strong> El valor correcto redondeado a dos decimales es: 
+                        <strong>Maximum attempts reached.</strong> The correct value rounded to two decimal places is: 
                         <span class="text-2xl font-extrabold text-orange-700">${correctFormattedString}</span>.
-                        Pasando al siguiente problema en 5 segundos... 😥
+                        Moving to the next problem in 5 seconds... 😥
                     `;
             feedbackArea.className =
               "mt-6 p-4 rounded-xl feedback-input failed";
@@ -468,16 +468,16 @@
 
           if (attemptsLeft > 0) {
             // INCORRECT - Attempts Left
-            feedbackArea.innerHTML = `<strong>Incorrecto ❌</strong> Por favor, inténtalo de nuevo. Intentos restantes: ${attemptsLeft}.`;
+            feedbackArea.innerHTML = `<strong>Incorrect ❌</strong> Please try again. Attempts remaining: ${attemptsLeft}.`;
             feedbackArea.className = "feedback feedback-incorrect";
           } else {
             // MAX ATTEMPTS REACHED - Reveal Answer
             state.currentProblemIndex++; // Move to next problem
 
             feedbackArea.innerHTML = `
-                        <strong>Máximo de intentos alcanzado.</strong> El valor correcto redondeado a dos decimales es: 
+                        <strong>Maximum attempts reached.</strong> The correct value rounded to two decimal places is: 
                         <span class="text-2xl font-extrabold text-orange-700">${correctFormattedString}</span>.
-                        Pasando al siguiente problema en 5 segundos... 😥
+                        Moving to the next problem in 5 seconds... 😥
                     `;
             feedbackArea.className =
               "mt-6 p-4 rounded-xl feedback-input failed";
