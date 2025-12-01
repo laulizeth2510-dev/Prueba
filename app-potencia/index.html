@@ -1,83 +1,394 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Powers & Exponents Challenge - Ages 10-16</title>
-    <link rel="stylesheet" href="../shared-styles.css" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <!-- Back to Home Button -->
-    <a href="../index.html" class="btn-back-home"> Home Menu </a>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Powers Workshop (5th Grade)</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* The custom math-text class is removed as we now use standard superscripts (like 5³) */
+        
+        /* Style for answer option buttons */
+        .answer-option {
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .answer-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+        }
+        .selected-answer {
+            background-color: #fdb97b; /* Orange 300 */
+            border-color: #fb923c; /* Orange 400 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center p-4 font-sans">
 
-    <!-- Decorative Doodles -->
-    <div class="doodle doodle-1">⚡</div>
-    <div class="doodle doodle-2">🔢</div>
-    <div class="doodle doodle-3">✨</div>
-    <div class="doodle doodle-4">📊</div>
+    <div class="w-full max-w-4xl bg-white shadow-xl rounded-xl p-6 md:p-10 mt-8 border border-orange-300">
+        <h1 class="text-4xl font-extrabold text-orange-700 mb-2 text-center">
+            Quiz: Mastering Powers (5th Grade)
+        </h1>
+        <p class="text-gray-500 mb-8 text-center text-lg">
+            Practice successive multiplication, theory, and application problems involving powers!
+        </p>
 
-    <div class="container">
-      <!-- Header -->
-      <header class="header">
-        <h1>POWERS & EXPONENTS</h1>
-        <p class="subtitle">Is this number a multiple of...? Discover it!</p>
-      </header>
-
-      <!-- Main Card -->
-      <div class="card">
-        <!-- Number Display -->
-        <div class="problem-box">
-          <p
-            class="handwriting"
-            style="
-              font-size: 1.2rem;
-              color: var(--text-secondary);
-              margin-bottom: 0.5rem;
-            "
-          >
-            Number to Analyze
-          </p>
-          <div id="randomNumberDisplay" class="problem-number">...</div>
+        <!-- Status Bar and Navigation -->
+        <div class="flex justify-between items-center mb-6 border-b pb-4">
+            <span class="text-xl font-semibold text-gray-700">
+                Question <span id="currentQuestionDisplay">1</span> of <span id="totalQuestionsDisplay">10</span>
+            </span>
+            <span class="text-xl font-semibold text-orange-600">
+                Score: <span id="scoreDisplay">0</span>/<span id="totalQuestionsDisplay2">10</span>
+            </span>
         </div>
 
-        <!-- Quiz Options -->
-        <div
-          id="quizOptions"
-          style="
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-bottom: 2rem;
-          "
-        >
-          <!-- Las opciones del quiz se generarán aquí -->
+        <!-- Question and Options Area -->
+        <div id="quizArea">
+            <div id="questionContainer" class="min-h-[100px] mb-8">
+                <!-- Question text goes here -->
+                <p class="text-2xl font-bold text-gray-800" id="questionText">Loading question...</p>
+            </div>
+
+            <div id="optionsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Answer options go here -->
+            </div>
         </div>
 
-        <!-- Controls -->
-        <div style="display: flex; gap: 1rem; margin-bottom: 2rem">
-          <button
-            onclick="generateNewNumber()"
-            id="newNumberButton"
-            class="btn btn-primary"
-            style="flex: 1"
-          >
-            🎲 New Number
-          </button>
+        <!-- Results Area (Hidden initially) -->
+        <div id="resultsArea" class="hidden text-center p-8 bg-green-50 rounded-xl shadow-lg">
+            <h2 class="text-3xl font-extrabold text-green-700 mb-4">Quiz Finished!</h2>
+            <p class="text-xl text-gray-700 mb-6">Your final score is:</p>
+            <p class="text-6xl font-black text-orange-600 mb-8" id="finalScoreDisplay">0/10</p>
+            <button onclick="reviewAnswers()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition duration-150 shadow-md">
+                Review Answers
+            </button>
+        </div>
+        
+        <!-- Navigation and Answer Review Area -->
+        <div class="mt-8 pt-6 border-t flex justify-between">
+            <button 
+                onclick="goToPreviousQuestion()" 
+                id="prevButton" 
+                class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-lg transition duration-150 shadow-md disabled:opacity-50" 
+                disabled
+            >
+                &larr; Previous
+            </button>
+            <button 
+                onclick="goToNextQuestion()" 
+                id="nextButton" 
+                class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-lg transition duration-150 shadow-md"
+            >
+                Next
+            </button>
         </div>
 
-        <!-- Feedback List -->
-        <div id="feedbackListContainer" style="margin-top: 2rem">
-          <!-- El feedback individual se insertará aquí -->
+        <!-- Detailed Review Area (Hidden initially) -->
+        <div id="reviewArea" class="mt-8 pt-6 border-t hidden">
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">Detailed Review</h3>
+            <div id="reviewContent">
+                <!-- Review content goes here -->
+            </div>
+            <button onclick="startQuiz()" class="mt-6 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition duration-150 shadow-md">
+                Restart Quiz
+            </button>
         </div>
 
-        <!-- Final Score -->
-        <div id="finalScoreContainer" style="margin-top: 2rem">
-          <!-- El score final se insertará aquí -->
-        </div>
-      </div>
     </div>
 
-    <script src="index.js"></script>
-  </body>
+    <script>
+        // --- Quiz Definition ---
+        const quizQuestions = [
+            {
+                question: "What does the exponent represent in a power like 5³?",
+                options: [
+                    { text: "The number that is repeatedly added.", isCorrect: false, rationale: "The exponent indicates how many times the base is multiplied by itself, not added." },
+                    { text: "The number of times the base is multiplied by itself.", isCorrect: true, rationale: "The exponent is the small number that indicates the successive multiplication of the base." },
+                    { text: "The final result of the multiplication.", isCorrect: false, rationale: "The final result is the 'power', not the exponent." },
+                    { text: "The number that is being multiplied (the base).", isCorrect: false, rationale: "The number being multiplied is the 'base', not the exponent." }
+                ]
+            },
+            {
+                question: "Calculate the value of 4³ (four raised to the power of three).",
+                options: [
+                    { text: "12", isCorrect: false, rationale: "This would be 4 x 3, but the power is 4 x 4 x 4." },
+                    { text: "16", isCorrect: false, rationale: "This is 4², one multiplication by 4 is missing." },
+                    { text: "64", isCorrect: true, rationale: "The correct calculation is 4 x 4 x 4 = 16 x 4 = 64." },
+                    { text: "256", isCorrect: false, rationale: "This is 4⁴, a common mistake from multiplying one extra time." }
+                ]
+            },
+            {
+                question: "Problem: If you have 3 boxes, and each box contains 3 cases, and each case has 3 markers. What is the total number of markers, expressed as a power?",
+                options: [
+                    { text: "3²", isCorrect: false, rationale: "This only represents boxes times cases. It fails to include the number of markers in each case." },
+                    { text: "3³", isCorrect: true, rationale: "The total quantity is 3 x 3 x 3, which is written as 3³." },
+                    { text: "9³", isCorrect: false, rationale: "The base is 3, not 9. The successive multiplication is 3 x 3 x 3." },
+                    { text: "3 x 3", isCorrect: false, rationale: "This is the multiplication, but not the power form 3³." }
+                ]
+            },
+            {
+                question: "In the expression 7⁴, which number is the base?",
+                options: [
+                    { text: "7", isCorrect: true, rationale: "The base is the large number (7), which is the factor that is repeatedly multiplied." },
+                    { text: "4", isCorrect: false, rationale: "4 is the exponent, which indicates how many times the base is multiplied." },
+                    { text: "11", isCorrect: false, rationale: "The power is not solved by adding the base and the exponent." },
+                    { text: "49", isCorrect: false, rationale: "49 is the result of 7², not the base." }
+                ]
+            },
+            {
+                question: "What is the result of 10² (ten squared)?",
+                options: [
+                    { text: "20", isCorrect: false, rationale: "This is 10 x 2, not the power 10 x 10." },
+                    { text: "100", isCorrect: true, rationale: "The result is 10 x 10 = 100. The exponent indicates the number of zeros." },
+                    { text: "1", isCorrect: false, rationale: "This is the result of 10⁰ (which is 1) or 1ⁿ (which is 1)." },
+                    { text: "10", isCorrect: false, rationale: "This is the result of 10¹." }
+                ]
+            },
+            {
+                question: "Problem: A spreadsheet plant is organized into 5 rows, and each row has 5 shelves, and each shelf holds 5 pots. What is the total number of pots expressed in power form?",
+                options: [
+                    { text: "5⁵", isCorrect: false, rationale: "It only multiplies 5 by 5 by 5, which gives 5³." },
+                    { text: "5³", isCorrect: true, rationale: "The successive multiplication is 5 x 5 x 5, which is represented as 5³." },
+                    { text: "15", isCorrect: false, rationale: "This is 5+5+5, not the power." },
+                    { text: "125", isCorrect: false, rationale: "This is the result, but the question asks for the expression in power form." }
+                ]
+            },
+            {
+                question: "How is the multiplication 2 x 2 x 2 x 2 x 2 written in power form?",
+                options: [
+                    { text: "2 x 5", isCorrect: false, rationale: "This is a simple multiplication, not the power form." },
+                    { text: "5²", isCorrect: false, rationale: "The base is 2 and the exponent is 5, not the other way around." },
+                    { text: "2⁵", isCorrect: true, rationale: "The base is 2 (the factor being multiplied) and the exponent is 5 (the number of times)." },
+                    { text: "32", isCorrect: false, rationale: "This is the result, but the question asks for the power expression." }
+                ]
+            },
+            {
+                question: "When a number is raised to the exponent 2 (squared), what geometric shape results from its calculation?",
+                options: [
+                    { text: "Cube", isCorrect: false, rationale: "The cube is related to the exponent 3 (cubed)." },
+                    { text: "Triangle", isCorrect: false, rationale: "The triangle is not directly related to powers with exponent 2." },
+                    { text: "Line", isCorrect: false, rationale: "Lines are represented in one dimension, not two like area." },
+                    { text: "Square", isCorrect: true, rationale: "The power squared represents the area of a square, multiplying side by side." }
+                ]
+            },
+            {
+                question: "Problem: A delivery person follows a route that has 6 streets that intersect 6 times. If the total number of intersections is represented as a power, what is the result of that power?",
+                options: [
+                    { text: "6²", isCorrect: false, rationale: "This is the expression, but the question asks for the result." },
+                    { text: "12", isCorrect: false, rationale: "This would be 6+6." },
+                    { text: "36", isCorrect: true, rationale: "The power is 6², and the result is 6 x 6 = 36." },
+                    { text: "216", isCorrect: false, rationale: "This would be 6³." }
+                ]
+            },
+            {
+                question: "What is the value of any number (except 0) raised to the exponent 1?",
+                options: [
+                    { text: "0", isCorrect: false, rationale: "The result is only 0 if the base is 0." },
+                    { text: "1", isCorrect: false, rationale: "The result is 1 only if the exponent is 0, or if the base is 1." },
+                    { text: "The number itself (the base)", isCorrect: true, rationale: "Any number raised to the 1 is equal to itself, since it is only multiplied once." },
+                    { text: "Double the number", isCorrect: false, rationale: "Double the number is 2 x base." }
+                ]
+            }
+        ];
+
+        // --- Global State ---
+        const state = {
+            currentQuestionIndex: 0,
+            userAnswers: Array(quizQuestions.length).fill(null), // Stores the index of the selected option (0, 1, 2, 3) or null
+            isReviewing: false,
+        };
+
+        // --- DOM Elements ---
+        const dom = {
+            questionText: document.getElementById('questionText'),
+            optionsContainer: document.getElementById('optionsContainer'),
+            currentQuestionDisplay: document.getElementById('currentQuestionDisplay'),
+            totalQuestionsDisplay: document.getElementById('totalQuestionsDisplay'),
+            totalQuestionsDisplay2: document.getElementById('totalQuestionsDisplay2'),
+            scoreDisplay: document.getElementById('scoreDisplay'),
+            prevButton: document.getElementById('prevButton'),
+            nextButton: document.getElementById('nextButton'),
+            quizArea: document.getElementById('quizArea'),
+            resultsArea: document.getElementById('resultsArea'),
+            finalScoreDisplay: document.getElementById('finalScoreDisplay'),
+            reviewArea: document.getElementById('reviewArea'),
+            reviewContent: document.getElementById('reviewContent'),
+        };
+
+        // --- Initialization and Rendering Logic ---
+
+        /** Starts or restarts the quiz */
+        function startQuiz() {
+            state.currentQuestionIndex = 0;
+            state.userAnswers = Array(quizQuestions.length).fill(null);
+            state.isReviewing = false;
+            dom.resultsArea.classList.add('hidden');
+            dom.reviewArea.classList.add('hidden');
+            dom.quizArea.classList.remove('hidden');
+            // Ensure navigation buttons are visible when starting/restarting
+            dom.prevButton.classList.remove('hidden');
+            dom.nextButton.classList.remove('hidden');
+            updateUI();
+            renderQuestion();
+        }
+        
+        /** Renders the question and its options in the DOM */
+        function renderQuestion() {
+            const index = state.currentQuestionIndex;
+            const currentQ = quizQuestions[index];
+
+            // 1. Display question text
+            dom.questionText.innerHTML = (index + 1) + ". " + currentQ.question;
+            
+            // 2. Clear and render options
+            dom.optionsContainer.innerHTML = '';
+            currentQ.options.forEach((option, optionIndex) => {
+                const isSelected = state.userAnswers[index] === optionIndex;
+                const optionElement = document.createElement('div');
+                optionElement.className = `answer-option p-4 border-2 border-gray-300 rounded-lg text-lg font-medium shadow-sm ${isSelected ? 'selected-answer' : 'bg-white hover:bg-orange-100'}`;
+                optionElement.innerHTML = option.text;
+                
+                // If we are in review mode, show the correction
+                if (state.isReviewing) {
+                    const rationale = option.rationale;
+                    let correctionClass = '';
+
+                    if (option.isCorrect) {
+                        correctionClass = 'bg-green-200 border-green-600'; // Correct option
+                    } else if (isSelected) {
+                        correctionClass = 'bg-red-200 border-red-600'; // Incorrect user answer
+                    }
+
+                    optionElement.className = `p-4 border-2 rounded-lg text-lg font-medium shadow-sm ${correctionClass}`;
+                    
+                    if (correctionClass) {
+                        const rationaleElement = document.createElement('p');
+                        rationaleElement.className = 'mt-2 text-sm ' + (option.isCorrect ? 'text-green-800 font-semibold' : 'text-red-800');
+                        rationaleElement.textContent = option.isCorrect ? `Correct: ${rationale}` : `Your Choice: ${rationale}`;
+                        optionElement.appendChild(rationaleElement);
+                    }
+                } else {
+                    // If NOT reviewing, allow selection
+                    optionElement.onclick = () => selectAnswer(optionIndex);
+                }
+                
+                dom.optionsContainer.appendChild(optionElement);
+            });
+            
+            // 3. Update the UI (buttons and status)
+            updateUI();
+        }
+
+        /** Updates the state of navigation buttons, index, and score */
+        function updateUI() {
+            const index = state.currentQuestionIndex;
+            const total = quizQuestions.length;
+            
+            // Update displays
+            dom.currentQuestionDisplay.textContent = index + 1;
+            dom.totalQuestionsDisplay.textContent = total;
+            dom.totalQuestionsDisplay2.textContent = total;
+
+            // Calculate and display score
+            const score = state.userAnswers.reduce((acc, current, qIndex) => {
+                if (current !== null && quizQuestions[qIndex].options[current].isCorrect) {
+                    return acc + 1;
+                }
+                return acc;
+            }, 0);
+            dom.scoreDisplay.textContent = score;
+
+            // Control navigation buttons
+            dom.prevButton.disabled = index === 0;
+            
+            if (state.isReviewing) {
+                // Changed 'Next &rarr;' to 'Next'
+                dom.nextButton.textContent = (index === total - 1) ? 'Finish Review' : 'Next';
+                dom.nextButton.onclick = (index === total - 1) ? finishReview : goToNextQuestion;
+            } else {
+                // Changed 'Next &rarr;' to 'Next'
+                dom.nextButton.textContent = (index === total - 1) ? 'Finish Quiz' : 'Next';
+                dom.nextButton.onclick = (index === total - 1) ? showResults : goToNextQuestion;
+            }
+        }
+
+        // --- Interaction Logic ---
+
+        /** Stores the selected answer index */
+        function selectAnswer(optionIndex) {
+            if (state.isReviewing) return; // Do not allow changes in review mode
+            
+            state.userAnswers[state.currentQuestionIndex] = optionIndex;
+            renderQuestion(); // Re-render to update 'selected-answer' style
+        }
+
+        /** Navigates to the previous question */
+        function goToPreviousQuestion() {
+            if (state.currentQuestionIndex > 0) {
+                state.currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        /** Navigates to the next question or finishes the quiz/review */
+        function goToNextQuestion() {
+            if (state.currentQuestionIndex < quizQuestions.length - 1) {
+                state.currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                // If it's the last question, call the appropriate finishing function
+                if (state.isReviewing) {
+                    finishReview();
+                } else {
+                    showResults();
+                }
+            }
+        }
+
+        /** Shows the final results */
+        function showResults() {
+            const score = state.userAnswers.reduce((acc, current, qIndex) => {
+                if (current !== null && quizQuestions[qIndex].options[current].isCorrect) {
+                    return acc + 1;
+                }
+                return acc;
+            }, 0);
+
+            dom.finalScoreDisplay.textContent = `${score}/${quizQuestions.length}`;
+            
+            dom.quizArea.classList.add('hidden');
+            dom.resultsArea.classList.remove('hidden');
+            dom.prevButton.classList.add('hidden');
+            dom.nextButton.classList.add('hidden');
+        }
+
+        /** Starts the answer review mode */
+        function reviewAnswers() {
+            state.isReviewing = true;
+            state.currentQuestionIndex = 0; // Start review from the first question
+            
+            dom.resultsArea.classList.add('hidden');
+            dom.quizArea.classList.remove('hidden');
+            dom.prevButton.classList.remove('hidden');
+            dom.nextButton.classList.remove('hidden');
+            
+            renderQuestion(); // Render the first question in review mode
+        }
+        
+        /** Finishes the review mode and returns to the results area */
+        function finishReview() {
+            state.isReviewing = false;
+            showResults(); // Go back to showing results (with the Restart button)
+        }
+
+        // --- Initialization ---
+        window.onload = function() {
+            dom.totalQuestionsDisplay.textContent = quizQuestions.length;
+            dom.totalQuestionsDisplay2.textContent = quizQuestions.length;
+            startQuiz(); // Start the quiz on load
+        };
+    </script>
+</body>
 </html>
