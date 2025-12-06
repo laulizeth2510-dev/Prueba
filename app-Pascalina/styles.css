@@ -1,0 +1,172 @@
+/* Estilos generales del cuerpo */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f3f4f6; /* Fondo claro */
+}
+
+/* Contenedor principal de la calculadora */
+.pascaline-frame {
+  padding: 0px;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  gap: 0;
+  margin-top: 0px;
+}
+
+/* Contenedor de la Rueda/Columna de Dígito */
+.digit-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 130px;
+  position: relative;
+  margin-right: 3px;
+}
+.digit-column:last-child {
+  margin-right: 0;
+}
+
+/* Contenedor de los engranajes */
+.gear-system {
+  height: 130px;
+  width: 130px;
+  position: relative;
+  /* Se mantiene subido un poco más el engranaje principal */
+  margin-top: -25px;
+  z-index: 1;
+}
+
+/* Estilo para el engranaje. Usamos JS para la animación suave. */
+.gear-svg {
+  position: absolute;
+  transform-origin: center;
+}
+
+/* Engranaje principal */
+.main-gear {
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* Botón de incremento (Simula la entrada del usuario) */
+.increment-button {
+  width: 100px;
+  padding: 8px 0;
+  border-radius: 4px;
+  font-weight: bold;
+  position: relative;
+  z-index: 5;
+  /* Espacio visual entre la parte visible del engranaje y el botón */
+  margin-top: 15px;
+}
+
+/* Caja negra de visualización del dígito */
+.current-value-display {
+  width: 100px;
+  margin-top: 8px; /* Espacio entre el botón verde y la caja negra */
+  padding: 4px 0;
+  background-color: #1f2937; /* Gris muy oscuro/Negro */
+  color: #ffeb3b; /* Texto Amarillo/Dorado para contraste */
+  font-size: 1.5rem;
+  font-weight: extra-bold;
+  text-align: center;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  /* Altura aproximada de 44px para alineamiento */
+  height: 44px;
+}
+
+/* NUEVO ESTILO: Columna para el separador decimal */
+.decimal-separator {
+  width: 15px; /* Anchura mínima para el punto */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  margin-right: 3px;
+}
+
+/* Contenedor del punto/coma para asegurar su posición */
+.decimal-point-container {
+  width: 100%;
+  height: 44px; /* Misma altura que la caja negra */
+  display: flex;
+  align-items: center; /* Centrado vertical */
+  justify-content: center; /* Centrado horizontal */
+  margin-top: 8px; /* Mismo margen que la caja negra */
+}
+
+/* El texto del punto/coma */
+.decimal-point-text {
+  font-size: 2.5rem; /* Tamaño grande para la coma */
+  line-height: 1;
+  color: #1f2937; /* Color oscuro */
+  font-weight: 900;
+  /* Ajuste vertical para que parezca un punto decimal en la línea base */
+  transform: translateY(4px);
+}
+
+/* Wrapper del Engranaje de Acarreo - AJUSTE DE TANGENCIA Y CAPA */
+.carry-gear-wrapper {
+  position: absolute;
+  height: 130px;
+  width: 130px;
+  /* El centro del engranaje gris debe estar 130px arriba del centro del engranaje amarillo (2 radios). */
+  top: -130px;
+  /* Z-index 2 para que el engranaje gris (acarreo) siempre esté visualmente por encima del engranaje principal amarillo */
+  z-index: 2;
+}
+
+/* Ventana de Lectura (Pequeño punto fijo sobre la rueda) */
+.fixed-reading-dot {
+  position: absolute;
+  /* Centrado horizontalmente */
+  left: 50%;
+  transform: translateX(-50%);
+  /* AJUSTE: Mueve el punto 20px hacia arriba para compensar el movimiento del engranaje */
+  top: -10px;
+
+  width: 4px;
+  height: 4px;
+  background-color: #d32f2f; /* Punto rojo de referencia */
+  border-radius: 50%;
+  border: 1px solid #000;
+  z-index: 10; /* Siempre encima del engranaje */
+}
+
+/* Indicador de Acarreo (mantiene el estilo) */
+.carry-indicator {
+  position: absolute;
+  /* Se ajusta también el indicador de acarreo para subir con el resto de la columna */
+  top: -10px;
+  right: 0px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #ffeb3b;
+  background-color: #d32f2f;
+  padding: 2px 5px;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.carry-active {
+  opacity: 1;
+  animation: flash 0.4s 2 alternate;
+}
+
+@keyframes flash {
+  from {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  to {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+}
