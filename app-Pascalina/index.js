@@ -168,12 +168,12 @@ function initializeWheels() {
 
   // Mapeo de valores de posición para el botón:
   const positionValues = [
-    '+0,001 (Milésimas)',
-    '+0,01 (Centésimas)',
-    '+0,1 (Décimas)',
-    '+1 (Unidades)',
-    '+10 (Decenas)',
-    '+100 (Centenas)',
+    '+0.001 (Thousandths)',
+    '+0.01 (Hundredths)',
+    '+0.1 (Tenths)',
+    '+1 (Ones)',
+    '+10 (Tens)',
+    '+100 (Hundreds)',
   ];
 
   // 1. Renderiza las ruedas de izquierda (mayor valor, Centenas) a derecha (menor valor, Milésimas)
@@ -188,7 +188,7 @@ function initializeWheels() {
                         
                         <!-- El contenedor del punto/coma, con la misma altura que la caja negra (44px) -->
                         <div class="decimal-point-container">
-                            <span class="decimal-point-text">,</span> 
+                            <span class="decimal-point-text">.</span> 
                         </div>
                     `;
       columnsContainer.appendChild(separator);
@@ -239,7 +239,7 @@ function initializeWheels() {
     const carryIndicator = document.createElement('span');
     carryIndicator.id = `carry-${i}`;
     carryIndicator.className = 'carry-indicator';
-    carryIndicator.textContent = 'ACARREO';
+    carryIndicator.textContent = 'CARRY';
     column.appendChild(carryIndicator);
 
     columnsContainer.appendChild(column);
@@ -476,15 +476,15 @@ function updateTotalDisplay() {
   // Convertir la parte entera a número para formato de miles
   let integerValue = parseInt(integerPartStr || '0', 10);
 
-  // Formatear la parte entera usando el estándar 'es-ES' (punto como separador de miles)
-  let formattedInteger = integerValue.toLocaleString('es-ES', {
+  // Formatear la parte entera usando el estándar 'en-US' (punto como separador de miles)
+  let formattedInteger = integerValue.toLocaleString('en-US', {
     minimumIntegerDigits: 1,
     useGrouping: true,
   });
 
-  // 3. Combinar con el separador decimal (coma para es-ES)
+  // 3. Combinar con el separador decimal (punto para en-US)
   let paddedDecimalPart = decimalPartStr.padEnd(3, '0').slice(0, 3);
-  let totalString = `${formattedInteger},${paddedDecimalPart}`;
+  let totalString = `${formattedInteger}.${paddedDecimalPart}`;
 
   totalDisplay.textContent = totalString;
 }
