@@ -1,7 +1,15 @@
+@import "../shared-styles.css";
 /* Estilos generales del cuerpo */
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   background-color: #f3f4f6; /* Fondo claro */
+}
+
+h1 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
+  font-size: clamp(2rem, 5vw, 3.5rem) !important;
 }
 
 /* Contenedor principal de la calculadora */
